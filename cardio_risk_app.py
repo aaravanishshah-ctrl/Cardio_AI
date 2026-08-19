@@ -1,8 +1,8 @@
 # =============================================================================
-# CARDIOVASCULAR RISK AI — STREAMLIT APP (v2)
-# Now uses TWO models:
-#   1. Gene-expression model (when CSV uploaded)
-#   2. Clinical-only model trained on UCI Heart Disease (when no CSV)
+# CARDIOVASCULAR RISK AI — STREAMLIT APP (v4)
+# - Kaggle Cardio dataset for clinical prediction
+# - Clinical fields ONLY shown in Clinical mode
+# - Gene mode ONLY asks for CSV upload
 # =============================================================================
 
 import streamlit as st
@@ -11,18 +11,16 @@ import numpy as np
 import joblib
 import os
 
-# -----------------------------------------------------------------------
-# PAGE CONFIG & STYLING
-# -----------------------------------------------------------------------
-
 st.set_page_config(
-    page_title="Cardio AI",
+    page_title="Cardiovascular Risk AI",
     page_icon="❤️",
     layout="wide",
 )
 
-# --- Custom CSS for font, background, and layout ---
-# --- Custom CSS for font, background, and layout ---
+# -----------------------------------------------------------------------
+# STYLING
+# -----------------------------------------------------------------------
+
 st.markdown("""
 <style>
     /* Main background — cerulean blue */
@@ -30,7 +28,7 @@ st.markdown("""
         background: #007BA7;
     }
     
-    /* Fonts — Georgia, white */
+    /* Fonts — Georgia, white body text */
     html, body, [class*="css"], p, div, span, label {
         font-family: 'Georgia', serif !important;
         color: white !important;
@@ -43,36 +41,63 @@ st.markdown("""
         font-weight: 700;
     }
     
-    /* Input labels stay white */
+    /* Input labels — white */
     .stTextInput label, .stNumberInput label, .stSelectbox label, 
     .stRadio label, .stFileUploader label {
         color: white !important;
     }
     
-    /* Input boxes — dark text on white background for readability */
-    .stTextInput input, .stNumberInput input, .stSelectbox div[data-baseweb="select"] {
+    /* Text inputs — white bg, black text */
+    .stTextInput input, .stNumberInput input {
         color: #0a1f44 !important;
         background-color: white !important;
         font-family: 'Georgia', serif !important;
     }
     
-    /* Buttons — dark blue with white text */
+    /* Dropdown — white bg, dark text */
+    div[data-baseweb="select"] > div {
+        background-color: white !important;
+        color: #0a1f44 !important;
+    }
+    div[data-baseweb="select"] * {
+        color: #0a1f44 !important;
+        font-family: 'Georgia', serif !important;
+    }
+    div[role="listbox"] {
+        background-color: white !important;
+    }
+    div[role="listbox"] * {
+        color: #0a1f44 !important;
+        background-color: white !important;
+        font-family: 'Georgia', serif !important;
+    }
+    div[role="option"]:hover {
+        background-color: #cce7f0 !important;
+    }
+    
+    /* Button — white bg, dark navy text */
     .stButton > button {
-        background-color: #0a1f44;
-        color: white !important;
+        background-color: white !important;
+        color: #0a1f44 !important;
         border-radius: 10px;
-        border: 2px solid white;
+        border: 2px solid #0a1f44;
         padding: 0.6rem 2rem;
         font-family: 'Georgia', serif !important;
-        font-weight: 600;
+        font-weight: 700;
+        font-size: 1.05rem;
         transition: all 0.2s;
     }
     .stButton > button:hover {
-        background-color: #1a3a6c;
+        background-color: #f0f8ff !important;
+        color: #0a1f44 !important;
         transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .stButton > button * {
+        color: #0a1f44 !important;
     }
     
-    /* Sidebar — darker blue */
+    /* Sidebar */
     section[data-testid="stSidebar"] {
         background: #0a1f44;
     }
@@ -81,17 +106,13 @@ st.markdown("""
         font-family: 'Georgia', serif !important;
     }
     
-    /* Alert boxes (info, warning, error) — keep readable */
+    /* Alert boxes */
     .stAlert {
-        color: #0a1f44 !important;
+        background-color: white !important;
     }
     .stAlert * {
         color: #0a1f44 !important;
-    }
-    
-    /* Tables & dataframes */
-    .stDataFrame {
-        color: #0a1f44 !important;
+        font-family: 'Georgia', serif !important;
     }
     
     /* Progress bar */
@@ -99,15 +120,16 @@ st.markdown("""
         background-color: #0a1f44 !important;
     }
     
-    /* Radio button text */
-    .stRadio > div {
+    /* File uploader */
+    .stFileUploader > div {
+        background-color: white !important;
+        border-radius: 8px;
+    }
+    .stFileUploader label {
         color: white !important;
     }
-    
-    /* Expander */
-    .streamlit-expanderHeader {
-        color: white !important;
-        font-family: 'Georgia', serif !important;
+    .stFileUploader * {
+        color: #0a1f44 !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -142,7 +164,7 @@ except FileNotFoundError as e:
 st.title("❤️ Cardiovascular Risk AI")
 st.markdown("""
 An AI-powered tool that estimates cardiovascular risk using either 
-**clinical data alone** (validated) or **gene expression + clinical data** (research).
+**clinical/lifestyle data** (validated) or **gene expression profiles** (research).
 """)
 
 if not model_loaded:
@@ -154,96 +176,113 @@ if not model_loaded:
 # -----------------------------------------------------------------------
 
 with st.sidebar:
-    st.header("ℹ️ About This Tool")
+    st.header("ℹ️ About")
     st.markdown("""
     **Two prediction modes:**
     
     🩺 **Clinical Mode**  
-    Uses standard risk factors (age, BP, cholesterol, etc.) trained on 
-    the UCI Heart Disease dataset (Cleveland Clinic).
+    Predicts overall cardiovascular disease risk from lifestyle 
+    and clinical factors (age, BP, BMI, cholesterol, smoking, 
+    activity level). Trained on 70,000 patients from the Kaggle 
+    Cardiovascular Disease dataset.
     
-    🧬 **Gene + Clinical Mode**  
-    Uses blood gene expression profiles combined with clinical data, 
-    trained on NCBI GEO datasets.
+    🧬 **Gene Expression Mode**  
+    Uses blood gene expression profiles to classify samples as 
+    CAD, Heart Failure, or Healthy. Trained on NCBI GEO 
+    datasets (research-only).
     
     ---
     
-    **⚠️ Medical Disclaimer**  
-    Research tool only. Not a diagnostic device. 
-    Consult a physician for medical advice.
+    **⚠️ Disclaimer**  
+    Research/educational tool. Not a diagnostic device.
     """)
 
 # -----------------------------------------------------------------------
 # INPUT MODE
 # -----------------------------------------------------------------------
 
-st.header("📋 Patient Information")
+st.header("📋 Choose Input Mode")
 
 input_mode = st.radio(
     "Prediction mode:",
-    ["🩺 Clinical only (recommended)", "🧬 Gene expression + clinical"],
+    ["🩺 Clinical / Lifestyle (recommended)", "🧬 Gene Expression"],
     horizontal=True,
 )
 
 use_gene_mode = "Gene" in input_mode
 
-# -----------------------------------------------------------------------
-# CLINICAL INPUTS (UCI Heart Disease format)
-# -----------------------------------------------------------------------
+st.markdown("---")
 
-st.subheader("Clinical & Lifestyle Data")
+# =======================================================================
+# CLINICAL MODE — Show lifestyle inputs
+# =======================================================================
 
-col1, col2, col3 = st.columns(3)
-
-with col1:
-    st.markdown("**Demographics**")
-    age = st.number_input("Age (years)", 20, 100, 50)
-    sex_label = st.selectbox("Sex", ["Female", "Male"])
-    sex = 1 if sex_label == "Male" else 0
-
-with col2:
-    st.markdown("**Vitals & Labs**")
-    trestbps = st.number_input("Resting BP (mmHg)", 80, 220, 130)
-    chol = st.number_input("Cholesterol (mg/dL)", 100, 600, 220)
-    fbs = 1 if st.selectbox("Fasting Blood Sugar > 120 mg/dL?", ["No", "Yes"]) == "Yes" else 0
-    thalach = st.number_input("Max Heart Rate", 60, 220, 150)
-
-with col3:
-    st.markdown("**Symptoms & History**")
-    cp = st.selectbox("Chest Pain Type", 
-                      ["Typical Angina (1)", "Atypical Angina (2)", 
-                       "Non-Anginal (3)", "Asymptomatic (4)"])
-    cp = int(cp.split("(")[1][0])
+if not use_gene_mode:
+    st.subheader("🩺 Lifestyle & Clinical Data")
+    st.markdown("Fill in the fields below to estimate your cardiovascular risk.")
     
-    exang = 1 if st.selectbox("Exercise-Induced Angina?", ["No", "Yes"]) == "Yes" else 0
-    oldpeak = st.number_input("ST Depression (oldpeak)", 0.0, 10.0, 1.0, step=0.1)
+    col1, col2, col3 = st.columns(3)
     
-    restecg = st.selectbox("Resting ECG", 
-                           ["Normal (0)", "ST-T Abnormality (1)", "LV Hypertrophy (2)"])
-    restecg = int(restecg.split("(")[1][0])
+    with col1:
+        st.markdown("**Demographics**")
+        age = st.number_input("Age (years)", 18, 100, 50)
+        gender_label = st.selectbox("Gender", ["Female", "Male"])
+        gender = 1 if gender_label == "Female" else 2
+        height = st.number_input("Height (cm)", 100, 220, 170)
+        weight = st.number_input("Weight (kg)", 30, 250, 75)
+        bmi = weight / ((height / 100) ** 2)
+        st.info(f"**BMI:** {bmi:.1f}")
+    
+    with col2:
+        st.markdown("**Blood Pressure & Labs**")
+        ap_hi = st.number_input("Systolic BP (mmHg)", 70, 250, 120)
+        ap_lo = st.number_input("Diastolic BP (mmHg)", 40, 200, 80)
+        
+        chol_label = st.selectbox("Cholesterol Level", 
+                                  ["Normal", "Above Normal", "Well Above Normal"])
+        cholesterol = {"Normal": 1, "Above Normal": 2, "Well Above Normal": 3}[chol_label]
+        
+        gluc_label = st.selectbox("Glucose Level", 
+                                  ["Normal", "Above Normal", "Well Above Normal"])
+        gluc = {"Normal": 1, "Above Normal": 2, "Well Above Normal": 3}[gluc_label]
+    
+    with col3:
+        st.markdown("**Lifestyle**")
+        smoke_label = st.selectbox("Do you smoke?", ["No", "Yes"])
+        smoke = 1 if smoke_label == "Yes" else 0
+        
+        alco_label = st.selectbox("Alcohol intake?", ["No", "Yes"])
+        alco = 1 if alco_label == "Yes" else 0
+        
+        active_label = st.selectbox("Physically active?", ["Yes", "No"])
+        active = 1 if active_label == "Yes" else 0
 
-# Advanced fields (collapsed)
-with st.expander("🔧 Advanced clinical fields (optional)"):
-    slope = st.selectbox("ST Slope", ["Upsloping (1)", "Flat (2)", "Downsloping (3)"])
-    slope = int(slope.split("(")[1][0])
-    ca = st.number_input("Major Vessels Colored (0-3)", 0, 3, 0)
-    thal = st.selectbox("Thalassemia", ["Normal (3)", "Fixed Defect (6)", "Reversible Defect (7)"])
-    thal = int(thal.split("(")[1][0])
+# =======================================================================
+# GENE MODE — Show only CSV upload
+# =======================================================================
 
-# -----------------------------------------------------------------------
-# GENE UPLOAD (only if gene mode)
-# -----------------------------------------------------------------------
-
-gene_data = None
-if use_gene_mode:
+else:
     st.subheader("🧬 Gene Expression Upload")
+    st.markdown("""
+    Upload a **CSV file** where:
+    - Each **row** is one sample (patient)
+    - Each **column** is a gene symbol (e.g. `TP53`, `IL6`, `BRCA1`)
+    - Values should be normalized expression (log2 or z-score)
+    
+    Genes not seen during training will be ignored. 
+    Missing genes will be filled with 0.
+    """)
+    
     uploaded_file = st.file_uploader("Upload gene expression CSV", type=["csv"])
+    gene_data = None
     if uploaded_file:
         gene_data = pd.read_csv(uploaded_file, index_col=0)
-        st.success(f"Loaded {gene_data.shape[0]} samples, {gene_data.shape[1]} genes")
+        st.success(f"✅ Loaded {gene_data.shape[0]} sample(s), {gene_data.shape[1]} genes")
+        with st.expander("Preview data"):
+            st.dataframe(gene_data.head(3))
 
 # -----------------------------------------------------------------------
-# PREDICT
+# PREDICT BUTTON
 # -----------------------------------------------------------------------
 
 st.markdown("---")
@@ -252,71 +291,81 @@ if st.button("🔍 Predict Cardiovascular Risk", type="primary", use_container_w
     
     st.header("📊 Results")
     
-    if use_gene_mode and gene_data is None:
-        st.warning("Please upload a gene expression CSV or switch to Clinical mode.")
-        st.stop()
-    
-    # ---------- CLINICAL-ONLY MODE ----------
+    # ---------- CLINICAL MODE ----------
     if not use_gene_mode:
-        # Build feature vector matching UCI format
         clin_input = pd.DataFrame([{
-            "age": age, "sex": sex, "cp": cp, "trestbps": trestbps,
-            "chol": chol, "fbs": fbs, "restecg": restecg, "thalach": thalach,
-            "exang": exang, "oldpeak": oldpeak, "slope": slope,
-            "ca": ca, "thal": thal,
+            "age_years": age,
+            "gender": gender,
+            "bmi": bmi,
+            "ap_hi": ap_hi,
+            "ap_lo": ap_lo,
+            "cholesterol": cholesterol,
+            "gluc": gluc,
+            "smoke": smoke,
+            "alco": alco,
+            "active": active,
         }])[CLINICAL_FEATURES]
         
         prob = clinical_model.predict_proba(clin_input)[0]
-        heart_disease_risk = prob[1] * 100
+        risk = prob[1] * 100
         
-        # Display
-        st.markdown(f"### 🩺 Overall Heart Disease Risk")
-        
-        if heart_disease_risk < 30:
-            color, icon, level = "🟢", "✅", "Low Risk"
-        elif heart_disease_risk < 60:
-            color, icon, level = "🟡", "⚠️", "Moderate Risk"
+        if risk < 30:
+            icon, level = "✅", "Low Risk"
+        elif risk < 60:
+            icon, level = "⚠️", "Moderate Risk"
         else:
-            color, icon, level = "🔴", "🚨", "High Risk"
+            icon, level = "🚨", "High Risk"
         
-        st.markdown(f"## {icon} {level}: **{heart_disease_risk:.1f}%**")
-        st.progress(int(heart_disease_risk))
+        st.markdown(f"## {icon} {level}: **{risk:.1f}%**")
+        st.progress(int(risk))
         
-        st.info(f"""
-        This estimate is based on the UCI Heart Disease dataset (n=297 patients).
-        Model AUC ≈ 0.90 on held-out test data.
+        # Contributing factors
+        st.markdown("### Contributing Factors")
+        factors = []
+        if age > 55: factors.append(f"• Age {age} (higher risk after 55)")
+        if bmi > 30: factors.append(f"• BMI {bmi:.1f} (obese range)")
+        elif bmi > 25: factors.append(f"• BMI {bmi:.1f} (overweight range)")
+        if ap_hi >= 140 or ap_lo >= 90: factors.append(f"• BP {ap_hi}/{ap_lo} (hypertension)")
+        if cholesterol >= 2: factors.append("• Elevated cholesterol")
+        if gluc >= 2: factors.append("• Elevated glucose")
+        if smoke: factors.append("• Smoker")
+        if not active: factors.append("• Sedentary lifestyle")
         
-        **Not a substitute for professional medical assessment.**
+        if factors:
+            for f in factors:
+                st.markdown(f)
+        else:
+            st.markdown("• No major risk factors identified 🎉")
+        
+        st.info("""
+        Based on the Kaggle Cardiovascular Disease dataset (70,000 patients).
+        Model ROC AUC ≈ 0.80. **Not a substitute for medical advice.**
         """)
     
-    # ---------- GENE + CLINICAL MODE ----------
+    # ---------- GENE MODE ----------
     else:
+        if gene_data is None:
+            st.warning("⚠️ Please upload a gene expression CSV first.")
+            st.stop()
+        
         for idx in gene_data.index:
             st.subheader(f"Sample: {idx}")
             
-            # Build gene vector (0 for missing genes)
             gene_vector = pd.Series(0.0, index=GENE_COLUMNS)
             for gene in GENE_COLUMNS:
                 if gene in gene_data.columns:
                     gene_vector[gene] = gene_data.loc[idx, gene]
-            
-            # Clinical vector (empty for gene model since GEO didn't have clinical)
             clin_vector = pd.Series(0.0, index=CLIN_COLUMNS)
             
             X_input = pd.DataFrame([pd.concat([gene_vector, clin_vector])])
             probs = gene_pipeline.predict_proba(X_input)[0]
             
-            # Independent risk display (NOT summing to 100%)
             st.markdown("**Risk per condition (independent):**")
             for cls, p in zip(encoder.classes_, probs):
                 pct = p * 100
-                if cls == "Healthy":
-                    st.markdown(f"🟢 **{cls}**: {pct:.1f}%")
-                elif cls == "CAD":
-                    st.markdown(f"🟡 **{cls}**: {pct:.1f}%")
-                else:
-                    st.markdown(f"🔴 **{cls}**: {pct:.1f}%")
+                icon = "🟢" if cls == "Healthy" else ("🟡" if cls == "CAD" else "🔴")
+                st.markdown(f"{icon} **{cls}**: {pct:.1f}%")
                 st.progress(int(pct))
     
     st.markdown("---")
-    st.warning("⚠️ **Medical Disclaimer:** For research/education only. Consult a physician.")
+    st.warning("⚠️ **Medical Disclaimer:** Research/education only. Consult a physician.")
