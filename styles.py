@@ -11,7 +11,7 @@ def apply_styles():
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         /* ==================================================== */
-        /* FIX 1: Kill white flash EVERYWHERE                   */
+        /* Kill white flash EVERYWHERE                          */
         /* ==================================================== */
         html, body, #root, .stApp, .main, .block-container,
         [data-testid="stAppViewContainer"],
@@ -23,7 +23,6 @@ def apply_styles():
             color: white;
         }
         
-        /* Force the entire viewport background */
         html {
             background: #0a1628 !important;
         }
@@ -58,27 +57,19 @@ def apply_styles():
             max-width: 1200px;
         }
         
-        /* ==================================================== */
-        /* FIX 3: Hide the floating page name label             */
-        /* ==================================================== */
+        /* Hide Streamlit chrome / floating page name */
         #MainMenu {visibility: hidden !important;}
         footer {visibility: hidden !important;}
         header[data-testid="stHeader"] { 
             background: transparent !important; 
             display: none !important;
         }
-        /* Hide the little page name that appears top-left */
         [data-testid="stDecoration"] { display: none !important; }
         [data-testid="stToolbar"] { display: none !important; }
         [data-testid="stStatusWidget"] { display: none !important; }
         .stAppHeader { display: none !important; }
-        [data-testid="stAppViewContainer"] > section > div:first-child > div:first-child:has(> [data-testid="stMarkdownContainer"] > p) {
-            display: none !important;
-        }
-        /* Hide the "app_name" label that Streamlit renders */
         div[class*="viewerBadge"] { display: none !important; }
         a[href*="streamlit.io"] { display: none !important; }
-        /* Nuclear option: hide anything positioned at top-left that's not the navbar */
         .stApp > header { display: none !important; }
         
         .stSpinner > div { border-top-color: #5eead4 !important; }
@@ -95,7 +86,9 @@ def apply_styles():
             letter-spacing: -0.02em;
         }
         
-        /* NAVBAR */
+        /* ==================================================== */
+        /* NAVBAR                                               */
+        /* ==================================================== */
         .navbar {
             display: flex;
             justify-content: space-between;
@@ -150,7 +143,9 @@ def apply_styles():
             box-shadow: 0 6px 20px rgba(94, 234, 212, 0.25);
         }
         
-        /* HERO */
+        /* ==================================================== */
+        /* HERO                                                 */
+        /* ==================================================== */
         .hero-pill {
             display: inline-flex;
             align-items: center;
@@ -194,7 +189,9 @@ def apply_styles():
             margin-bottom: 2.5rem;
         }
         
-        /* SECTION LABELS */
+        /* ==================================================== */
+        /* SECTION LABELS                                       */
+        /* ==================================================== */
         .section-label {
             color: #5eead4 !important;
             font-size: 0.75rem;
@@ -218,7 +215,9 @@ def apply_styles():
             margin-bottom: 3rem;
         }
         
-        /* STATS ROW */
+        /* ==================================================== */
+        /* STATS ROW                                            */
+        /* ==================================================== */
         .stats-row {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -243,7 +242,9 @@ def apply_styles():
             line-height: 1.4;
         }
         
-        /* FEATURE CARDS */
+        /* ==================================================== */
+        /* FEATURE CARDS                                        */
+        /* ==================================================== */
         .feature-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -280,7 +281,9 @@ def apply_styles():
             line-height: 1.6;
         }
         
-        /* NORMAL BUTTONS */
+        /* ==================================================== */
+        /* MAIN BUTTONS (Begin Assessment, Predict, etc.)       */
+        /* ==================================================== */
         .stButton > button {
             background: #5eead4 !important;
             color: #0a1628 !important;
@@ -299,7 +302,9 @@ def apply_styles():
         }
         .stButton > button * { color: #0a1628 !important; }
         
-        /* NUMBER INPUTS */
+        /* ==================================================== */
+        /* NUMBER + TEXT INPUTS                                 */
+        /* ==================================================== */
         .stNumberInput input, .stTextInput input {
             background: #142943 !important;
             color: white !important;
@@ -318,75 +323,111 @@ def apply_styles():
         }
         
         /* ==================================================== */
-        /* FIX 2: DROPDOWN — force navy bg + white text ALWAYS  */
+        /* DROPDOWN — match number input styling EXACTLY        */
         /* ==================================================== */
-        /* Target every possible dropdown selector */
-        .stSelectbox, 
-        .stSelectbox > div,
         .stSelectbox > div > div,
-        div[data-baseweb="select"],
-        div[data-baseweb="select"] > div,
-        div[data-baseweb="select"] > div > div,
-        div[data-baseweb="select"] > div > div > div,
-        div[data-baseweb="select"] input,
-        div[data-baseweb="select"] div[role="button"],
-        div[data-baseweb="base-input"],
-        div[data-baseweb="base-input"] > div,
-        [data-baseweb="select"] * {
+        div[data-baseweb="select"] > div {
             background-color: #142943 !important;
-            color: white !important;
-            border-color: rgba(94, 234, 212, 0.15) !important;
+            border: 1px solid rgba(94, 234, 212, 0.15) !important;
+            border-radius: 8px !important;
+            min-height: 42px !important;
+            padding: 0.1rem 0.3rem !important;
         }
         
-        /* The actual visible text of selected value */
-        div[data-baseweb="select"] div[role="button"] > div,
-        div[data-baseweb="select"] span,
-        .stSelectbox span {
-            color: white !important;
+        div[data-baseweb="select"] div[role="button"] {
+            background-color: transparent !important;
+            color: #ffffff !important;
+            opacity: 1 !important;
+        }
+        div[data-baseweb="select"] div[role="button"] > div {
+            color: #ffffff !important;
+            opacity: 1 !important;
             background-color: transparent !important;
             font-family: 'Inter', sans-serif !important;
+            font-size: 1rem !important;
+        }
+        div[data-baseweb="select"] div[role="button"] > div > div {
+            color: #ffffff !important;
+            opacity: 1 !important;
+            background-color: transparent !important;
         }
         
-        /* Chevron arrow */
+        div[data-baseweb="select"] span {
+            color: #ffffff !important;
+            opacity: 1 !important;
+            background-color: transparent !important;
+        }
+        
+        div[data-baseweb="select"] input {
+            color: #ffffff !important;
+            background-color: transparent !important;
+            opacity: 1 !important;
+        }
+        
         div[data-baseweb="select"] svg {
             fill: #5eead4 !important;
             color: #5eead4 !important;
+            opacity: 1 !important;
         }
         
-        /* Opened dropdown menu (popover) */
-        div[data-baseweb="popover"],
+        /* Opened dropdown menu */
+        div[data-baseweb="popover"] {
+            background-color: #142943 !important;
+            border: 1px solid rgba(94, 234, 212, 0.15) !important;
+            border-radius: 8px !important;
+        }
         div[data-baseweb="popover"] > div,
-        div[data-baseweb="popover"] ul,
         div[role="listbox"],
         ul[role="listbox"] {
             background-color: #142943 !important;
-            border: 1px solid rgba(94, 234, 212, 0.15) !important;
+            border: none !important;
         }
-        div[data-baseweb="popover"] *,
-        div[role="listbox"] *,
-        ul[role="listbox"] *,
-        li[role="option"] {
+        
+        li[role="option"],
+        div[role="option"] {
             background-color: #142943 !important;
-            color: white !important;
+            color: #ffffff !important;
+            opacity: 1 !important;
             font-family: 'Inter', sans-serif !important;
+            padding: 0.6rem 1rem !important;
         }
+        li[role="option"] *,
+        div[role="option"] * {
+            color: #ffffff !important;
+            opacity: 1 !important;
+            background-color: transparent !important;
+        }
+        
         li[role="option"]:hover,
         div[role="option"]:hover {
             background-color: rgba(94, 234, 212, 0.15) !important;
         }
+        li[role="option"]:hover *,
+        div[role="option"]:hover * {
+            color: #ffffff !important;
+        }
+        
         li[aria-selected="true"],
         div[aria-selected="true"] {
             background-color: rgba(94, 234, 212, 0.2) !important;
+        }
+        li[aria-selected="true"] *,
+        div[aria-selected="true"] * {
             color: #5eead4 !important;
         }
         
+        /* ==================================================== */
+        /* LABELS above inputs                                  */
+        /* ==================================================== */
         .stTextInput label, .stNumberInput label, .stSelectbox label, .stRadio label {
             color: #94a3b8 !important;
             font-size: 0.85rem !important;
             font-weight: 500 !important;
         }
         
-        /* RADIO buttons — also make navy with teal accent */
+        /* ==================================================== */
+        /* RADIO BUTTONS — navy with teal accent                */
+        /* ==================================================== */
         .stRadio [role="radiogroup"] { gap: 1rem; }
         .stRadio [role="radiogroup"] > label {
             background: #142943 !important;
@@ -394,38 +435,28 @@ def apply_styles():
             border-radius: 10px;
             border: 1px solid rgba(94, 234, 212, 0.15) !important;
         }
-        .stRadio [role="radiogroup"] > label > div:first-child {
-            background: transparent !important;
+        .stRadio [role="radiogroup"] > label * {
+            color: white !important;
         }
-        .stRadio [role="radiogroup"] > label > div:first-child > div {
-            border-color: #5eead4 !important;
-        }
-        /* Selected radio dot */
-        .stRadio [role="radiogroup"] > label[data-checked="true"] > div:first-child > div {
-            background-color: #5eead4 !important;
-        }
-        /* Fix the red/coral color on radio */
-        .stRadio input[type="radio"]:checked + div {
-            background: #5eead4 !important;
-            border-color: #5eead4 !important;
-        }
-        .stRadio > div > label > div > div {
-            background: transparent !important;
-        }
-        /* BaseWeb radio button styling */
+        
         div[data-baseweb="radio"] div[role="radio"] {
-            background: transparent !important;
-            border-color: rgba(94, 234, 212, 0.5) !important;
+            background-color: transparent !important;
+            border: 2px solid rgba(94, 234, 212, 0.5) !important;
         }
         div[data-baseweb="radio"] div[role="radio"][aria-checked="true"] {
-            background: #5eead4 !important;
+            background-color: #5eead4 !important;
             border-color: #5eead4 !important;
         }
         div[data-baseweb="radio"] div[role="radio"][aria-checked="true"] > div {
-            background: #0a1628 !important;
+            background-color: #0a1628 !important;
+        }
+        .stRadio input[type="radio"]:checked {
+            accent-color: #5eead4 !important;
         }
         
-        /* ALERTS */
+        /* ==================================================== */
+        /* ALERTS                                               */
+        /* ==================================================== */
         .stAlert {
             background: #0f1e33 !important;
             border: 1px solid rgba(94, 234, 212, 0.15) !important;
@@ -433,9 +464,15 @@ def apply_styles():
         }
         .stAlert * { color: white !important; }
         
+        /* ==================================================== */
+        /* PROGRESS BAR                                         */
+        /* ==================================================== */
         .stProgress > div > div > div { background: #5eead4 !important; }
         .stProgress > div > div { background: #142943 !important; }
         
+        /* ==================================================== */
+        /* FILE UPLOADER                                        */
+        /* ==================================================== */
         [data-testid="stFileUploaderDropzone"] {
             background: #0f1e33 !important;
             border: 2px dashed rgba(94, 234, 212, 0.15) !important;
@@ -459,6 +496,9 @@ def apply_styles():
             display: none !important;
         }
         
+        /* ==================================================== */
+        /* RESULT CARDS                                         */
+        /* ==================================================== */
         .result-card {
             background: #0f1e33;
             border: 1px solid rgba(94, 234, 212, 0.15);
@@ -474,6 +514,9 @@ def apply_styles():
             margin: 0.5rem 0;
         }
         
+        /* ==================================================== */
+        /* CITATIONS                                            */
+        /* ==================================================== */
         .citation-block {
             background: #0f1e33;
             border-left: 3px solid #5eead4;
@@ -495,6 +538,9 @@ def apply_styles():
             margin: 3rem 0;
         }
         
+        /* ==================================================== */
+        /* FOOTER                                               */
+        /* ==================================================== */
         .footer {
             margin-top: 5rem;
             padding: 2rem 0;
@@ -506,7 +552,7 @@ def apply_styles():
     </style>
     
     <script>
-        // Force body background on page load to eliminate white flash
+        // Force body background instantly to reduce white flash
         document.documentElement.style.backgroundColor = '#0a1628';
         document.body.style.backgroundColor = '#0a1628';
     </script>
@@ -514,7 +560,7 @@ def apply_styles():
 
 
 def render_navbar(active_page="home"):
-    """Beautiful HTML navbar. Navigation via query params."""
+    """Beautiful HTML navbar. Navigation via query params + st.switch_page()."""
     
     if "nav" in st.query_params:
         target = st.query_params["nav"]
