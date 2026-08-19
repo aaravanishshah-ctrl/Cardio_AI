@@ -10,9 +10,6 @@ def apply_styles():
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* ==================================================== */
-        /* Kill white flash EVERYWHERE                          */
-        /* ==================================================== */
         html, body, #root, .stApp, .main, .block-container,
         [data-testid="stAppViewContainer"],
         [data-testid="stAppViewBlockContainer"],
@@ -23,12 +20,8 @@ def apply_styles():
             color: white;
         }
         
-        html {
-            background: #0a1628 !important;
-        }
-        body {
-            background: #0a1628 !important;
-        }
+        html { background: #0a1628 !important; }
+        body { background: #0a1628 !important; }
         
         :root {
             --bg-dark: #0a1628;
@@ -57,7 +50,6 @@ def apply_styles():
             max-width: 1200px;
         }
         
-        /* Hide Streamlit chrome / floating page name */
         #MainMenu {visibility: hidden !important;}
         footer {visibility: hidden !important;}
         header[data-testid="stHeader"] { 
@@ -216,7 +208,7 @@ def apply_styles():
         }
         
         /* ==================================================== */
-        /* STATS ROW                                            */
+        /* STATS + FEATURES                                     */
         /* ==================================================== */
         .stats-row {
             display: grid;
@@ -241,10 +233,6 @@ def apply_styles():
             font-size: 0.85rem;
             line-height: 1.4;
         }
-        
-        /* ==================================================== */
-        /* FEATURE CARDS                                        */
-        /* ==================================================== */
         .feature-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -282,7 +270,7 @@ def apply_styles():
         }
         
         /* ==================================================== */
-        /* MAIN BUTTONS (Begin Assessment, Predict, etc.)       */
+        /* MAIN BUTTONS                                         */
         /* ==================================================== */
         .stButton > button {
             background: #5eead4 !important;
@@ -303,130 +291,151 @@ def apply_styles():
         .stButton > button * { color: #0a1628 !important; }
         
         /* ==================================================== */
-        /* NUMBER + TEXT INPUTS                                 */
+        /* CRITICAL: Make ALL widget WRAPPERS transparent       */
+        /* This removes the lighter blue "halo" behind labels   */
+        /* ==================================================== */
+        [data-testid="stSelectbox"],
+        [data-testid="stNumberInput"],
+        [data-testid="stTextInput"],
+        [data-testid="stRadio"],
+        [data-testid="stFileUploader"],
+        div[data-testid="stSelectbox"] > div,
+        div[data-testid="stNumberInput"] > div,
+        div[data-testid="stTextInput"] > div,
+        div[data-testid="element-container"] {
+            background-color: transparent !important;
+            background: transparent !important;
+        }
+        
+        /* Labels should also have transparent bg */
+        [data-testid="stWidgetLabel"],
+        [data-testid="stWidgetLabel"] * {
+            background-color: transparent !important;
+            background: transparent !important;
+        }
+        
+        /* ==================================================== */
+        /* NUMBER + TEXT INPUTS — the visible box               */
         /* ==================================================== */
         .stNumberInput input, .stTextInput input {
-            background: #142943 !important;
+            background-color: #142943 !important;
             color: white !important;
             border: 1px solid rgba(94, 234, 212, 0.15) !important;
             border-radius: 8px !important;
             padding: 0.6rem 0.9rem !important;
             font-family: 'Inter', sans-serif !important;
+            font-size: 1rem !important;
         }
         .stNumberInput button {
-            background: #142943 !important;
+            background-color: #142943 !important;
             color: white !important;
             border: 1px solid rgba(94, 234, 212, 0.15) !important;
         }
         .stNumberInput button:hover {
-            background: rgba(94, 234, 212, 0.15) !important;
+            background-color: rgba(94, 234, 212, 0.15) !important;
         }
         
         /* ==================================================== */
-        /* DROPDOWN — match number input styling EXACTLY        */
+        /* DROPDOWN — make the input box match number inputs   */
         /* ==================================================== */
-        .stSelectbox > div > div,
-        div[data-baseweb="select"] > div {
+        
+        /* The visible box (BaseWeb select control) */
+        div[data-baseweb="select"] > div:first-child {
             background-color: #142943 !important;
             border: 1px solid rgba(94, 234, 212, 0.15) !important;
             border-radius: 8px !important;
             min-height: 42px !important;
-            padding: 0.1rem 0.3rem !important;
+            padding: 0.1rem 0.5rem !important;
         }
         
-        div[data-baseweb="select"] div[role="button"] {
-            background-color: transparent !important;
+        /* KILL the opacity on selected value — was showing text as faded */
+        div[data-baseweb="select"] div[role="button"],
+        div[data-baseweb="select"] div[role="button"] *,
+        div[data-baseweb="select"] div[data-baseweb="select-option"],
+        div[data-baseweb="select"] [class*="valueContainer"],
+        div[data-baseweb="select"] [class*="singleValue"],
+        div[data-baseweb="select"] [class*="ValueContainer"] {
             color: #ffffff !important;
             opacity: 1 !important;
-        }
-        div[data-baseweb="select"] div[role="button"] > div {
-            color: #ffffff !important;
-            opacity: 1 !important;
-            background-color: transparent !important;
-            font-family: 'Inter', sans-serif !important;
-            font-size: 1rem !important;
-        }
-        div[data-baseweb="select"] div[role="button"] > div > div {
-            color: #ffffff !important;
-            opacity: 1 !important;
+            -webkit-text-fill-color: #ffffff !important;
             background-color: transparent !important;
         }
         
+        /* All spans, text inside the selected value display */
         div[data-baseweb="select"] span {
             color: #ffffff !important;
             opacity: 1 !important;
-            background-color: transparent !important;
+            -webkit-text-fill-color: #ffffff !important;
         }
         
+        /* Hidden input */
         div[data-baseweb="select"] input {
             color: #ffffff !important;
             background-color: transparent !important;
             opacity: 1 !important;
+            -webkit-text-fill-color: #ffffff !important;
         }
         
+        /* Chevron */
         div[data-baseweb="select"] svg {
             fill: #5eead4 !important;
             color: #5eead4 !important;
             opacity: 1 !important;
         }
         
-        /* Opened dropdown menu */
+        /* Opened menu */
         div[data-baseweb="popover"] {
             background-color: #142943 !important;
             border: 1px solid rgba(94, 234, 212, 0.15) !important;
             border-radius: 8px !important;
         }
-        div[data-baseweb="popover"] > div,
-        div[role="listbox"],
-        ul[role="listbox"] {
+        div[data-baseweb="popover"] * {
+            background-color: transparent !important;
+        }
+        div[role="listbox"], ul[role="listbox"] {
             background-color: #142943 !important;
             border: none !important;
         }
-        
-        li[role="option"],
-        div[role="option"] {
-            background-color: #142943 !important;
+        li[role="option"], div[role="option"] {
+            background-color: transparent !important;
             color: #ffffff !important;
             opacity: 1 !important;
+            -webkit-text-fill-color: #ffffff !important;
             font-family: 'Inter', sans-serif !important;
             padding: 0.6rem 1rem !important;
         }
-        li[role="option"] *,
-        div[role="option"] * {
+        li[role="option"] *, div[role="option"] * {
             color: #ffffff !important;
             opacity: 1 !important;
+            -webkit-text-fill-color: #ffffff !important;
             background-color: transparent !important;
         }
-        
-        li[role="option"]:hover,
-        div[role="option"]:hover {
+        li[role="option"]:hover, div[role="option"]:hover {
             background-color: rgba(94, 234, 212, 0.15) !important;
         }
-        li[role="option"]:hover *,
-        div[role="option"]:hover * {
-            color: #ffffff !important;
-        }
-        
-        li[aria-selected="true"],
-        div[aria-selected="true"] {
+        li[aria-selected="true"], div[aria-selected="true"] {
             background-color: rgba(94, 234, 212, 0.2) !important;
         }
-        li[aria-selected="true"] *,
-        div[aria-selected="true"] * {
+        li[aria-selected="true"] *, div[aria-selected="true"] * {
             color: #5eead4 !important;
+            -webkit-text-fill-color: #5eead4 !important;
         }
         
         /* ==================================================== */
-        /* LABELS above inputs                                  */
+        /* LABELS above inputs — no bg, just white text         */
         /* ==================================================== */
-        .stTextInput label, .stNumberInput label, .stSelectbox label, .stRadio label {
+        .stTextInput label, .stNumberInput label, .stSelectbox label, .stRadio label,
+        [data-testid="stWidgetLabel"] label,
+        [data-testid="stWidgetLabel"] p {
             color: #94a3b8 !important;
             font-size: 0.85rem !important;
             font-weight: 500 !important;
+            background-color: transparent !important;
+            background: transparent !important;
         }
         
         /* ==================================================== */
-        /* RADIO BUTTONS — navy with teal accent                */
+        /* RADIO BUTTONS                                        */
         /* ==================================================== */
         .stRadio [role="radiogroup"] { gap: 1rem; }
         .stRadio [role="radiogroup"] > label {
@@ -438,7 +447,6 @@ def apply_styles():
         .stRadio [role="radiogroup"] > label * {
             color: white !important;
         }
-        
         div[data-baseweb="radio"] div[role="radio"] {
             background-color: transparent !important;
             border: 2px solid rgba(94, 234, 212, 0.5) !important;
@@ -455,7 +463,7 @@ def apply_styles():
         }
         
         /* ==================================================== */
-        /* ALERTS                                               */
+        /* ALERTS, PROGRESS, FILE UPLOADER                      */
         /* ==================================================== */
         .stAlert {
             background: #0f1e33 !important;
@@ -464,15 +472,9 @@ def apply_styles():
         }
         .stAlert * { color: white !important; }
         
-        /* ==================================================== */
-        /* PROGRESS BAR                                         */
-        /* ==================================================== */
         .stProgress > div > div > div { background: #5eead4 !important; }
         .stProgress > div > div { background: #142943 !important; }
         
-        /* ==================================================== */
-        /* FILE UPLOADER                                        */
-        /* ==================================================== */
         [data-testid="stFileUploaderDropzone"] {
             background: #0f1e33 !important;
             border: 2px dashed rgba(94, 234, 212, 0.15) !important;
@@ -497,7 +499,7 @@ def apply_styles():
         }
         
         /* ==================================================== */
-        /* RESULT CARDS                                         */
+        /* RESULT CARDS + CITATIONS                             */
         /* ==================================================== */
         .result-card {
             background: #0f1e33;
@@ -513,10 +515,6 @@ def apply_styles():
             line-height: 1;
             margin: 0.5rem 0;
         }
-        
-        /* ==================================================== */
-        /* CITATIONS                                            */
-        /* ==================================================== */
         .citation-block {
             background: #0f1e33;
             border-left: 3px solid #5eead4;
@@ -538,9 +536,6 @@ def apply_styles():
             margin: 3rem 0;
         }
         
-        /* ==================================================== */
-        /* FOOTER                                               */
-        /* ==================================================== */
         .footer {
             margin-top: 5rem;
             padding: 2rem 0;
@@ -552,7 +547,6 @@ def apply_styles():
     </style>
     
     <script>
-        // Force body background instantly to reduce white flash
         document.documentElement.style.backgroundColor = '#0a1628';
         document.body.style.backgroundColor = '#0a1628';
     </script>
