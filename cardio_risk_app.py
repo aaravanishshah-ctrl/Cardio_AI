@@ -28,9 +28,19 @@ st.markdown("""
         modeling with blood-based gene expression profiling — built for clinicians 
         and researchers who need precision, speed, and clarity.
     </p>
-   
 </div>
 """, unsafe_allow_html=True)
+
+# Hero CTA buttons (using Streamlit buttons for fast page navigation)
+col_cta1, col_cta2, col_cta_spacer = st.columns([1.5, 1.5, 5])
+with col_cta1:
+    if st.button("🕐 Begin Assessment", key="hero_begin"):
+        st.switch_page("pages/1_Screening_Tool.py")
+with col_cta2:
+    st.markdown('<div class="secondary-btn">', unsafe_allow_html=True)
+    if st.button("Explore features →", key="hero_explore"):
+        st.switch_page("pages/2_Clinical_Reference.py")
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # STATS
 st.markdown("""
@@ -64,16 +74,6 @@ st.markdown("""
         This tool provides a reproducible, scored risk assessment in minutes — 
         using either lifestyle factors alone or full gene expression profiles.
     </p>
-    # Hero CTA buttons
-col_cta1, col_cta2, col_cta_spacer = st.columns([1.5, 1.5, 5])
-with col_cta1:
-    if st.button("🕐 Begin Assessment", key="hero_begin"):
-        st.switch_page("pages/1_Screening_Tool.py")
-with col_cta2:
-    st.markdown('<div class="secondary-btn">', unsafe_allow_html=True)
-    if st.button("Explore features →", key="hero_explore"):
-        st.switch_page("pages/2_Clinical_Reference.py")
-    st.markdown('</div>', unsafe_allow_html=True)
 </div>
 
 <div class="feature-grid">
