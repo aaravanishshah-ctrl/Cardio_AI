@@ -28,19 +28,23 @@ st.markdown("""
         modeling with blood-based gene expression profiling — built for clinicians 
         and researchers who need precision, speed, and clarity.
     </p>
+    <div class="hero-cta-visual">
+        <div class="hero-cta-primary">🕐 Begin Assessment</div>
+        <div class="hero-cta-secondary">Explore features →</div>
+    </div>
 </div>
 """, unsafe_allow_html=True)
 
-# Hero CTA buttons (using Streamlit buttons for fast page navigation)
-col_cta1, col_cta2, col_cta_spacer = st.columns([1.5, 1.5, 5])
-with col_cta1:
-    if st.button("🕐 Begin Assessment", key="hero_begin"):
+# Invisible buttons overlaid on the hero CTA visuals
+st.markdown('<div class="invisible-hero-buttons">', unsafe_allow_html=True)
+col_h1, col_h2, col_h_spacer = st.columns([1.5, 1.5, 5])
+with col_h1:
+    if st.button("begin", key="hero_begin"):
         st.switch_page("pages/1_Screening_Tool.py")
-with col_cta2:
-    st.markdown('<div class="secondary-btn">', unsafe_allow_html=True)
-    if st.button("Explore features →", key="hero_explore"):
+with col_h2:
+    if st.button("explore", key="hero_explore"):
         st.switch_page("pages/2_Clinical_Reference.py")
-    st.markdown('</div>', unsafe_allow_html=True)
+st.markdown('</div>', unsafe_allow_html=True)
 
 # STATS
 st.markdown("""
