@@ -15,6 +15,15 @@ st.set_page_config(
 apply_styles()
 render_navbar(active_page="home")
 
+# Handle hero button query params
+if "goto" in st.query_params:
+    target = st.query_params["goto"]
+    st.query_params.clear()
+    if target == "screening":
+        st.switch_page("pages/1_Screening_Tool.py")
+    elif target == "clinical":
+        st.switch_page("pages/2_Clinical_Reference.py")
+
 # HERO
 st.markdown("""
 <div style="padding: 3rem 0 2rem 0;">
@@ -28,23 +37,24 @@ st.markdown("""
         modeling with blood-based gene expression profiling — built for clinicians 
         and researchers who need precision, speed, and clarity.
     </p>
-    <div class="hero-cta-visual">
-        <div class="hero-cta-primary">🕐 Begin Assessment</div>
-        <div class="hero-cta-secondary">Explore features →</div>
+    <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+        <a href="?goto=screening" target="_self" style="text-decoration:none;">
+            <div style="background: #5eead4; color: #0a1628; padding: 0.9rem 2rem; border-radius: 10px; font-weight: 600; font-family: 'Inter', sans-serif; display: inline-block; cursor: pointer; transition: all 0.2s;"
+                 onmouseover="this.style.background='#6ee7d0'; this.style.transform='translateY(-2px)';"
+                 onmouseout="this.style.background='#5eead4'; this.style.transform='translateY(0)';">
+                🕐 Begin Assessment
+            </div>
+        </a>
+        <a href="?goto=clinical" target="_self" style="text-decoration:none;">
+            <div style="background: transparent; color: white; padding: 0.9rem 2rem; border-radius: 10px; font-weight: 600; border: 1px solid rgba(94, 234, 212, 0.3); font-family: 'Inter', sans-serif; display: inline-block; cursor: pointer; transition: all 0.2s;"
+                 onmouseover="this.style.background='rgba(94, 234, 212, 0.1)'; this.style.color='#5eead4';"
+                 onmouseout="this.style.background='transparent'; this.style.color='white';">
+                Explore features →
+            </div>
+        </a>
     </div>
 </div>
 """, unsafe_allow_html=True)
-
-# Invisible buttons overlaid on the hero CTA visuals
-st.markdown('<div class="invisible-hero-buttons">', unsafe_allow_html=True)
-col_h1, col_h2, col_h_spacer = st.columns([1.5, 1.5, 5])
-with col_h1:
-    if st.button("begin", key="hero_begin"):
-        st.switch_page("pages/1_Screening_Tool.py")
-with col_h2:
-    if st.button("explore", key="hero_explore"):
-        st.switch_page("pages/2_Clinical_Reference.py")
-st.markdown('</div>', unsafe_allow_html=True)
 
 # STATS
 st.markdown("""
