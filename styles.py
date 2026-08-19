@@ -1,14 +1,20 @@
 # =============================================================================
 # Shared styling module for CardioAI multi-page app.
-# Import into each page with: from styles import apply_styles
 # =============================================================================
 
 import streamlit as st
 
 def apply_styles():
     st.markdown("""
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=swap');
+        /* ==== Prevent white flash during navigation ==== */
+        html, body {
+            background-color: #0a1628 !important;
+            color: white;
+        }
         
         :root {
             --bg-dark: #0a1628;
@@ -40,6 +46,11 @@ def apply_styles():
         #MainMenu {visibility: hidden;}
         footer {visibility: hidden;}
         header[data-testid="stHeader"] { background: transparent; }
+        
+        /* Loading spinner in theme color */
+        .stSpinner > div {
+            border-top-color: #5eead4 !important;
+        }
         
         html, body, [class*="css"], p, div, span, label, li {
             font-family: 'Inter', -apple-system, sans-serif !important;
@@ -260,9 +271,7 @@ def apply_styles():
             background: rgba(94, 234, 212, 0.15) !important;
         }
         
-        /* ==================================================== */
-        /* DROPDOWN FIX — force dark navy bg, white text ALWAYS */
-        /* ==================================================== */
+        /* DROPDOWN FIX */
         div[data-baseweb="select"] > div,
         div[data-baseweb="select"] > div > div,
         div[data-baseweb="select"] input {
@@ -274,17 +283,14 @@ def apply_styles():
             color: white !important;
             font-family: 'Inter', sans-serif !important;
         }
-        /* The selected value text */
         div[data-baseweb="select"] div[role="button"] {
             background-color: #142943 !important;
             color: white !important;
         }
-        /* Dropdown chevron (arrow) */
         div[data-baseweb="select"] svg {
             fill: #5eead4 !important;
             color: #5eead4 !important;
         }
-        /* Opened dropdown menu */
         div[data-baseweb="popover"],
         div[role="listbox"],
         ul[role="listbox"] {
@@ -388,7 +394,7 @@ def apply_styles():
         }
         .citation-block * { color: #94a3b8 !important; }
         
-        /* HIDE SIDEBAR NAV (we use custom navbar instead) */
+        /* HIDE SIDEBAR NAV */
         section[data-testid="stSidebar"] { display: none !important; }
         button[kind="header"] { display: none !important; }
         
@@ -412,7 +418,6 @@ def apply_styles():
 
 
 def render_navbar(active_page="home"):
-    """Renders the top navbar with the active page highlighted."""
     pages = {
         "home": ("Home", "/"),
         "screening": ("Screening Tool", "/Screening_Tool"),
@@ -424,7 +429,7 @@ def render_navbar(active_page="home"):
     links_html = ""
     for key, (label, url) in pages.items():
         if key == "home":
-            continue  # skip home link (logo is home)
+            continue
         cls = "active" if key == active_page else ""
         links_html += f'<a href="{url}" target="_self" class="{cls}">{label}</a>'
     
