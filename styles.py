@@ -64,45 +64,6 @@ def apply_styles():
             letter-spacing: -0.02em;
         }
         
-        /* NAVBAR */
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 0 2rem 0;
-            border-bottom: 1px solid rgba(94, 234, 212, 0.15);
-            margin-bottom: 3rem;
-        }
-        .navbar-logo {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            font-family: 'Playfair Display', serif;
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: white;
-        }
-        .logo-icon {
-            width: 32px;
-            height: 32px;
-            background: #5eead4;
-            border-radius: 8px;
-            display: inline-block;
-        }
-        .navbar-links {
-            display: flex;
-            gap: 2rem;
-            color: #94a3b8;
-            font-size: 0.95rem;
-        }
-        .navbar-links a { 
-            color: #94a3b8 !important; 
-            text-decoration: none; 
-            transition: color 0.2s;
-        }
-        .navbar-links a:hover { color: #5eead4 !important; }
-        .navbar-links a.active { color: #5eead4 !important; }
-        
         /* HERO */
         .hero-pill {
             display: inline-flex;
@@ -234,7 +195,7 @@ def apply_styles():
             line-height: 1.6;
         }
         
-        /* BUTTONS */
+        /* DEFAULT BUTTONS (Predict, Begin Assessment, etc.) */
         .stButton > button {
             background: #5eead4 !important;
             color: #0a1628 !important;
@@ -251,90 +212,89 @@ def apply_styles():
             transform: translateY(-2px);
             box-shadow: 0 10px 30px rgba(94, 234, 212, 0.25);
         }
-        .stButton > button * { color: #0a1628 !important; } /* ============================================ */
-/* NAVBAR BUTTONS — styled to look like links   */
-/* ============================================ */
-
-/* Navbar link-style buttons (Screening Tool, Clinical Reference, etc.) */
-.nav-link-btn button {
-    background: transparent !important;
-    color: #94a3b8 !important;
-    border: none !important;
-    box-shadow: none !important;
-    padding: 0.5rem 0.75rem !important;
-    font-family: 'Inter', sans-serif !important;
-    font-weight: 400 !important;
-    font-size: 0.95rem !important;
-    transition: color 0.2s !important;
-}
-.nav-link-btn button:hover {
-    background: transparent !important;
-    color: #5eead4 !important;
-    transform: none !important;
-    box-shadow: none !important;
-}
-.nav-link-btn button * {
-    color: inherit !important;
-}
-.nav-link-btn.active button {
-    color: #5eead4 !important;
-}
-
-/* Logo button (top-left) */
-.nav-logo-btn button {
-    background: transparent !important;
-    color: white !important;
-    border: none !important;
-    box-shadow: none !important;
-    padding: 0 !important;
-    font-family: 'Playfair Display', serif !important;
-    font-size: 1.4rem !important;
-    font-weight: 700 !important;
-    text-align: left !important;
-    justify-content: flex-start !important;
-}
-.nav-logo-btn button:hover {
-    background: transparent !important;
-    color: #5eead4 !important;
-    transform: none !important;
-    box-shadow: none !important;
-}
-.nav-logo-btn button * {
-    color: inherit !important;
-}
-
-/* CTA button (Start Screening, top-right) */
-.nav-cta-btn button {
-    background: #5eead4 !important;
-    color: #0a1628 !important;
-    border: none !important;
-    border-radius: 8px !important;
-    padding: 0.6rem 1.4rem !important;
-    font-family: 'Inter', sans-serif !important;
-    font-weight: 600 !important;
-    font-size: 0.9rem !important;
-    transition: all 0.2s !important;
-}
-.nav-cta-btn button:hover {
-    background: #6ee7d0 !important;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(94, 234, 212, 0.25) !important;
-}
-.nav-cta-btn button * {
-    color: #0a1628 !important;
-}
-
-/* Secondary button (outlined) — for "Explore features" */
-.secondary-btn button {
-    background: transparent !important;
-    color: white !important;
-    border: 1px solid rgba(94, 234, 212, 0.3) !important;
-}
-.secondary-btn button:hover {
-    background: rgba(94, 234, 212, 0.1) !important;
-    color: #5eead4 !important;
-}
-.secondary-btn button * { color: inherit !important; }
+        .stButton > button * { color: #0a1628 !important; }
+        
+        /* ============================================ */
+        /* NAVBAR BUTTONS — styled to look like links   */
+        /* ============================================ */
+        
+        .nav-link-btn button {
+            background: transparent !important;
+            color: #94a3b8 !important;
+            border: none !important;
+            box-shadow: none !important;
+            padding: 0.5rem 0.75rem !important;
+            font-family: 'Inter', sans-serif !important;
+            font-weight: 400 !important;
+            font-size: 0.95rem !important;
+            transition: color 0.2s !important;
+        }
+        .nav-link-btn button:hover {
+            background: transparent !important;
+            color: #5eead4 !important;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+        .nav-link-btn button * {
+            color: inherit !important;
+        }
+        .nav-link-btn.active button {
+            color: #5eead4 !important;
+        }
+        
+        .nav-logo-btn button {
+            background: transparent !important;
+            color: white !important;
+            border: none !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+            font-family: 'Playfair Display', serif !important;
+            font-size: 1.4rem !important;
+            font-weight: 700 !important;
+            text-align: left !important;
+            justify-content: flex-start !important;
+        }
+        .nav-logo-btn button:hover {
+            background: transparent !important;
+            color: #5eead4 !important;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+        .nav-logo-btn button * {
+            color: inherit !important;
+        }
+        
+        .nav-cta-btn button {
+            background: #5eead4 !important;
+            color: #0a1628 !important;
+            border: none !important;
+            border-radius: 8px !important;
+            padding: 0.6rem 1.4rem !important;
+            font-family: 'Inter', sans-serif !important;
+            font-weight: 600 !important;
+            font-size: 0.9rem !important;
+            transition: all 0.2s !important;
+        }
+        .nav-cta-btn button:hover {
+            background: #6ee7d0 !important;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(94, 234, 212, 0.25) !important;
+        }
+        .nav-cta-btn button * {
+            color: #0a1628 !important;
+        }
+        
+        /* Secondary button (outlined) — for "Explore features" */
+        .secondary-btn button {
+            background: transparent !important;
+            color: white !important;
+            border: 1px solid rgba(94, 234, 212, 0.3) !important;
+        }
+        .secondary-btn button:hover {
+            background: rgba(94, 234, 212, 0.1) !important;
+            color: #5eead4 !important;
+        }
+        .secondary-btn button * { color: inherit !important; }
         
         /* NUMBER INPUTS */
         .stNumberInput input, .stTextInput input {
