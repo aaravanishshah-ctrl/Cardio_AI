@@ -47,7 +47,6 @@ def apply_styles():
         footer {visibility: hidden;}
         header[data-testid="stHeader"] { background: transparent; }
         
-        /* Loading spinner in theme color */
         .stSpinner > div {
             border-top-color: #5eead4 !important;
         }
@@ -62,6 +61,101 @@ def apply_styles():
             color: #ffffff !important;
             font-weight: 700 !important;
             letter-spacing: -0.02em;
+        }
+        
+        /* ==================================================== */
+        /* NAVBAR — beautiful HTML with invisible button overlay */
+        /* ==================================================== */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0 2rem 0;
+            border-bottom: 1px solid rgba(94, 234, 212, 0.15);
+            margin-bottom: 3rem;
+        }
+        .navbar-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: white;
+        }
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: #5eead4;
+            border-radius: 8px;
+            display: inline-block;
+        }
+        .navbar-links {
+            display: flex;
+            gap: 2.5rem;
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+        .navbar-links span.nav-item {
+            color: #94a3b8;
+            cursor: pointer;
+            transition: color 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+        .navbar-links span.nav-item:hover { color: #5eead4; }
+        .navbar-links span.nav-item.active { color: #5eead4; }
+        .navbar-cta {
+            background: #5eead4;
+            color: #0a1628 !important;
+            padding: 0.6rem 1.4rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .navbar-cta:hover {
+            background: #6ee7d0;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(94, 234, 212, 0.25);
+        }
+        
+        /* ==================================================== */
+        /* INVISIBLE BUTTON OVERLAY TRICK                       */
+        /* Hides Streamlit buttons but keeps them clickable     */
+        /* ==================================================== */
+        .invisible-nav-buttons {
+            position: absolute;
+            top: 1rem;
+            left: 0;
+            right: 0;
+            z-index: 999;
+            pointer-events: none;
+        }
+        .invisible-nav-buttons .stButton {
+            pointer-events: auto;
+        }
+        .invisible-nav-buttons .stButton > button {
+            background: transparent !important;
+            color: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            width: 100% !important;
+            height: 40px !important;
+            cursor: pointer !important;
+            font-size: 0 !important;
+        }
+        .invisible-nav-buttons .stButton > button:hover {
+            background: transparent !important;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+        .invisible-nav-buttons .stButton > button * {
+            color: transparent !important;
+            font-size: 0 !important;
         }
         
         /* HERO */
@@ -107,6 +201,77 @@ def apply_styles():
             color: #94a3b8 !important;
             max-width: 620px;
             margin-bottom: 2.5rem;
+        }
+        
+        /* HERO CTA BUTTONS — invisible overlay on styled divs */
+        .hero-cta-visual {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            position: relative;
+        }
+        .hero-cta-primary {
+            background: #5eead4;
+            color: #0a1628 !important;
+            padding: 0.9rem 2rem;
+            border-radius: 10px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            display: inline-block;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .hero-cta-primary:hover {
+            background: #6ee7d0;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(94, 234, 212, 0.25);
+        }
+        .hero-cta-secondary {
+            background: transparent;
+            color: white !important;
+            padding: 0.9rem 2rem;
+            border-radius: 10px;
+            font-weight: 600;
+            border: 1px solid rgba(94, 234, 212, 0.3);
+            display: inline-block;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .hero-cta-secondary:hover {
+            background: rgba(94, 234, 212, 0.1);
+            color: #5eead4 !important;
+        }
+        
+        /* Invisible hero button overlay */
+        .invisible-hero-buttons {
+            position: relative;
+            margin-top: -3.5rem;
+            z-index: 999;
+            pointer-events: none;
+        }
+        .invisible-hero-buttons .stButton {
+            pointer-events: auto;
+        }
+        .invisible-hero-buttons .stButton > button {
+            background: transparent !important;
+            color: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            height: 50px !important;
+            cursor: pointer !important;
+            font-size: 0 !important;
+        }
+        .invisible-hero-buttons .stButton > button:hover {
+            background: transparent !important;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+        .invisible-hero-buttons .stButton > button * {
+            color: transparent !important;
+            font-size: 0 !important;
         }
         
         /* SECTION LABELS */
@@ -195,7 +360,7 @@ def apply_styles():
             line-height: 1.6;
         }
         
-        /* DEFAULT BUTTONS (Predict, Begin Assessment, etc.) */
+        /* NORMAL BUTTONS (Predict, Begin Assessment on form pages) */
         .stButton > button {
             background: #5eead4 !important;
             color: #0a1628 !important;
@@ -213,88 +378,6 @@ def apply_styles():
             box-shadow: 0 10px 30px rgba(94, 234, 212, 0.25);
         }
         .stButton > button * { color: #0a1628 !important; }
-        
-        /* ============================================ */
-        /* NAVBAR BUTTONS — styled to look like links   */
-        /* ============================================ */
-        
-        .nav-link-btn button {
-            background: transparent !important;
-            color: #94a3b8 !important;
-            border: none !important;
-            box-shadow: none !important;
-            padding: 0.5rem 0.75rem !important;
-            font-family: 'Inter', sans-serif !important;
-            font-weight: 400 !important;
-            font-size: 0.95rem !important;
-            transition: color 0.2s !important;
-        }
-        .nav-link-btn button:hover {
-            background: transparent !important;
-            color: #5eead4 !important;
-            transform: none !important;
-            box-shadow: none !important;
-        }
-        .nav-link-btn button * {
-            color: inherit !important;
-        }
-        .nav-link-btn.active button {
-            color: #5eead4 !important;
-        }
-        
-        .nav-logo-btn button {
-            background: transparent !important;
-            color: white !important;
-            border: none !important;
-            box-shadow: none !important;
-            padding: 0 !important;
-            font-family: 'Playfair Display', serif !important;
-            font-size: 1.4rem !important;
-            font-weight: 700 !important;
-            text-align: left !important;
-            justify-content: flex-start !important;
-        }
-        .nav-logo-btn button:hover {
-            background: transparent !important;
-            color: #5eead4 !important;
-            transform: none !important;
-            box-shadow: none !important;
-        }
-        .nav-logo-btn button * {
-            color: inherit !important;
-        }
-        
-        .nav-cta-btn button {
-            background: #5eead4 !important;
-            color: #0a1628 !important;
-            border: none !important;
-            border-radius: 8px !important;
-            padding: 0.6rem 1.4rem !important;
-            font-family: 'Inter', sans-serif !important;
-            font-weight: 600 !important;
-            font-size: 0.9rem !important;
-            transition: all 0.2s !important;
-        }
-        .nav-cta-btn button:hover {
-            background: #6ee7d0 !important;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(94, 234, 212, 0.25) !important;
-        }
-        .nav-cta-btn button * {
-            color: #0a1628 !important;
-        }
-        
-        /* Secondary button (outlined) — for "Explore features" */
-        .secondary-btn button {
-            background: transparent !important;
-            color: white !important;
-            border: 1px solid rgba(94, 234, 212, 0.3) !important;
-        }
-        .secondary-btn button:hover {
-            background: rgba(94, 234, 212, 0.1) !important;
-            color: #5eead4 !important;
-        }
-        .secondary-btn button * { color: inherit !important; }
         
         /* NUMBER INPUTS */
         .stNumberInput input, .stTextInput input {
@@ -437,7 +520,6 @@ def apply_styles():
         }
         .citation-block * { color: #94a3b8 !important; }
         
-        /* HIDE SIDEBAR NAV */
         section[data-testid="stSidebar"] { display: none !important; }
         button[kind="header"] { display: none !important; }
         
@@ -461,54 +543,57 @@ def apply_styles():
 
 
 def render_navbar(active_page="home"):
-    """Renders the top navbar using native Streamlit buttons for fast navigation."""
+    """Beautiful HTML navbar with invisible Streamlit buttons overlaid for fast nav."""
     
-    col_logo, col_spacer, col_links, col_cta = st.columns([2, 1, 4, 1.5])
+    # Step 1: Render beautiful HTML navbar (visuals only)
+    nav_items = [
+        ("screening", "Screening Tool"),
+        ("clinical", "Clinical Reference"),
+        ("clinicians", "For Clinicians"),
+        ("about", "About"),
+    ]
+    
+    links_html = ""
+    for key, label in nav_items:
+        cls = "active" if key == active_page else ""
+        links_html += f'<span class="nav-item {cls}">{label}</span>'
+    
+    st.markdown(f"""
+    <div class="navbar">
+        <div class="navbar-logo">
+            <span class="logo-icon"></span>
+            CardioAI
+        </div>
+        <div class="navbar-links">
+            {links_html}
+        </div>
+        <div class="navbar-cta">Start Screening →</div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Step 2: Overlay invisible Streamlit buttons on top of the navbar
+    st.markdown('<div class="invisible-nav-buttons">', unsafe_allow_html=True)
+    col_logo, col_spacer, col1, col2, col3, col4, col_cta = st.columns([2, 0.5, 1.2, 1.4, 1.2, 0.8, 1.5])
     
     with col_logo:
-        st.markdown('<div class="nav-logo-btn">', unsafe_allow_html=True)
-        if st.button("● CardioAI", key="nav_logo"):
+        if st.button("logo", key="nav_logo"):
             st.switch_page("cardio_risk_app.py")
-        st.markdown('</div>', unsafe_allow_html=True)
-    
-    with col_links:
-        subcol1, subcol2, subcol3, subcol4 = st.columns(4)
-        
-        with subcol1:
-            active_cls = "active" if active_page == "screening" else ""
-            st.markdown(f'<div class="nav-link-btn {active_cls}">', unsafe_allow_html=True)
-            if st.button("Screening Tool", key="nav_screening"):
-                st.switch_page("pages/1_Screening_Tool.py")
-            st.markdown('</div>', unsafe_allow_html=True)
-        
-        with subcol2:
-            active_cls = "active" if active_page == "clinical" else ""
-            st.markdown(f'<div class="nav-link-btn {active_cls}">', unsafe_allow_html=True)
-            if st.button("Clinical Reference", key="nav_clinical"):
-                st.switch_page("pages/2_Clinical_Reference.py")
-            st.markdown('</div>', unsafe_allow_html=True)
-        
-        with subcol3:
-            active_cls = "active" if active_page == "clinicians" else ""
-            st.markdown(f'<div class="nav-link-btn {active_cls}">', unsafe_allow_html=True)
-            if st.button("For Clinicians", key="nav_clinicians"):
-                st.switch_page("pages/3_For_Clinicians.py")
-            st.markdown('</div>', unsafe_allow_html=True)
-        
-        with subcol4:
-            active_cls = "active" if active_page == "about" else ""
-            st.markdown(f'<div class="nav-link-btn {active_cls}">', unsafe_allow_html=True)
-            if st.button("About", key="nav_about"):
-                st.switch_page("pages/4_About.py")
-            st.markdown('</div>', unsafe_allow_html=True)
-    
-    with col_cta:
-        st.markdown('<div class="nav-cta-btn">', unsafe_allow_html=True)
-        if st.button("Start Screening →", key="nav_cta"):
+    with col1:
+        if st.button("screening", key="nav_screening"):
             st.switch_page("pages/1_Screening_Tool.py")
-        st.markdown('</div>', unsafe_allow_html=True)
-    
-    st.markdown("<hr style='margin: 1rem 0 3rem 0;'>", unsafe_allow_html=True)
+    with col2:
+        if st.button("clinical", key="nav_clinical"):
+            st.switch_page("pages/2_Clinical_Reference.py")
+    with col3:
+        if st.button("clinicians", key="nav_clinicians"):
+            st.switch_page("pages/3_For_Clinicians.py")
+    with col4:
+        if st.button("about", key="nav_about"):
+            st.switch_page("pages/4_About.py")
+    with col_cta:
+        if st.button("cta", key="nav_cta"):
+            st.switch_page("pages/1_Screening_Tool.py")
+    st.markdown('</div>', unsafe_allow_html=True)
 
 
 def render_footer():
