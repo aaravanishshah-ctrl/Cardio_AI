@@ -10,7 +10,6 @@ def apply_styles():
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* ==== Prevent white flash during navigation ==== */
         html, body {
             background-color: #0a1628 !important;
             color: white;
@@ -47,9 +46,7 @@ def apply_styles():
         footer {visibility: hidden;}
         header[data-testid="stHeader"] { background: transparent; }
         
-        .stSpinner > div {
-            border-top-color: #5eead4 !important;
-        }
+        .stSpinner > div { border-top-color: #5eead4 !important; }
         
         html, body, [class*="css"], p, div, span, label, li {
             font-family: 'Inter', -apple-system, sans-serif !important;
@@ -64,7 +61,7 @@ def apply_styles():
         }
         
         /* ==================================================== */
-        /* NAVBAR — beautiful HTML with invisible button overlay */
+        /* NAVBAR — beautiful HTML                              */
         /* ==================================================== */
         .navbar {
             display: flex;
@@ -93,7 +90,6 @@ def apply_styles():
         .navbar-links {
             display: flex;
             gap: 2.5rem;
-            color: #94a3b8;
             font-size: 0.95rem;
         }
         .navbar-links span.nav-item {
@@ -122,40 +118,29 @@ def apply_styles():
         }
         
         /* ==================================================== */
-        /* INVISIBLE BUTTON OVERLAY TRICK                       */
-        /* Hides Streamlit buttons but keeps them clickable     */
+        /* NUCLEAR INVISIBLE BUTTONS                            */
+        /* Uses visibility: collapse + zero height              */
         /* ==================================================== */
-        .invisible-nav-buttons {
-            position: absolute;
-            top: 1rem;
-            left: 0;
-            right: 0;
-            z-index: 999;
-            pointer-events: none;
-        }
-        .invisible-nav-buttons .stButton {
-            pointer-events: auto;
-        }
-        .invisible-nav-buttons .stButton > button {
-            background: transparent !important;
-            color: transparent !important;
-            border: none !important;
-            box-shadow: none !important;
+        div[data-testid="stVerticalBlock"] div[data-testid="element-container"]:has(.hide-me),
+        div[data-testid="element-container"]:has(.hide-me) {
+            height: 0 !important;
+            min-height: 0 !important;
+            max-height: 0 !important;
             padding: 0 !important;
             margin: 0 !important;
-            width: 100% !important;
-            height: 40px !important;
-            cursor: pointer !important;
-            font-size: 0 !important;
+            overflow: hidden !important;
+            visibility: hidden !important;
         }
-        .invisible-nav-buttons .stButton > button:hover {
-            background: transparent !important;
-            transform: none !important;
-            box-shadow: none !important;
-        }
-        .invisible-nav-buttons .stButton > button * {
+        
+        /* Hidden button trigger area — clickable text link that fires the button */
+        .hidden-nav-trigger {
+            position: absolute;
+            top: 1.5rem;
+            display: inline-block;
+            cursor: pointer;
             color: transparent !important;
-            font-size: 0 !important;
+            width: auto;
+            padding: 0.5rem 0.75rem;
         }
         
         /* HERO */
@@ -201,77 +186,6 @@ def apply_styles():
             color: #94a3b8 !important;
             max-width: 620px;
             margin-bottom: 2.5rem;
-        }
-        
-        /* HERO CTA BUTTONS — invisible overlay on styled divs */
-        .hero-cta-visual {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
-            position: relative;
-        }
-        .hero-cta-primary {
-            background: #5eead4;
-            color: #0a1628 !important;
-            padding: 0.9rem 2rem;
-            border-radius: 10px;
-            font-weight: 600;
-            font-family: 'Inter', sans-serif;
-            display: inline-block;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .hero-cta-primary:hover {
-            background: #6ee7d0;
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(94, 234, 212, 0.25);
-        }
-        .hero-cta-secondary {
-            background: transparent;
-            color: white !important;
-            padding: 0.9rem 2rem;
-            border-radius: 10px;
-            font-weight: 600;
-            border: 1px solid rgba(94, 234, 212, 0.3);
-            display: inline-block;
-            font-family: 'Inter', sans-serif;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .hero-cta-secondary:hover {
-            background: rgba(94, 234, 212, 0.1);
-            color: #5eead4 !important;
-        }
-        
-        /* Invisible hero button overlay */
-        .invisible-hero-buttons {
-            position: relative;
-            margin-top: -3.5rem;
-            z-index: 999;
-            pointer-events: none;
-        }
-        .invisible-hero-buttons .stButton {
-            pointer-events: auto;
-        }
-        .invisible-hero-buttons .stButton > button {
-            background: transparent !important;
-            color: transparent !important;
-            border: none !important;
-            box-shadow: none !important;
-            padding: 0 !important;
-            margin: 0 !important;
-            height: 50px !important;
-            cursor: pointer !important;
-            font-size: 0 !important;
-        }
-        .invisible-hero-buttons .stButton > button:hover {
-            background: transparent !important;
-            transform: none !important;
-            box-shadow: none !important;
-        }
-        .invisible-hero-buttons .stButton > button * {
-            color: transparent !important;
-            font-size: 0 !important;
         }
         
         /* SECTION LABELS */
@@ -360,7 +274,7 @@ def apply_styles():
             line-height: 1.6;
         }
         
-        /* NORMAL BUTTONS (Predict, Begin Assessment on form pages) */
+        /* NORMAL BUTTONS (form pages — Predict, Begin Assessment) */
         .stButton > button {
             background: #5eead4 !important;
             color: #0a1628 !important;
@@ -439,14 +353,12 @@ def apply_styles():
             color: #5eead4 !important;
         }
         
-        /* LABELS */
         .stTextInput label, .stNumberInput label, .stSelectbox label, .stRadio label {
             color: #94a3b8 !important;
             font-size: 0.85rem !important;
             font-weight: 500 !important;
         }
         
-        /* RADIO */
         .stRadio [role="radiogroup"] { gap: 1rem; }
         .stRadio [role="radiogroup"] > label {
             background: #0f1e33;
@@ -455,7 +367,6 @@ def apply_styles():
             border: 1px solid rgba(94, 234, 212, 0.15);
         }
         
-        /* ALERTS */
         .stAlert {
             background: #0f1e33 !important;
             border: 1px solid rgba(94, 234, 212, 0.15) !important;
@@ -463,11 +374,9 @@ def apply_styles():
         }
         .stAlert * { color: white !important; }
         
-        /* PROGRESS BAR */
         .stProgress > div > div > div { background: #5eead4 !important; }
         .stProgress > div > div { background: #142943 !important; }
         
-        /* FILE UPLOADER */
         [data-testid="stFileUploaderDropzone"] {
             background: #0f1e33 !important;
             border: 2px dashed rgba(94, 234, 212, 0.15) !important;
@@ -491,7 +400,6 @@ def apply_styles():
             display: none !important;
         }
         
-        /* RESULT CARDS */
         .result-card {
             background: #0f1e33;
             border: 1px solid rgba(94, 234, 212, 0.15);
@@ -507,7 +415,6 @@ def apply_styles():
             margin: 0.5rem 0;
         }
         
-        /* CITATIONS */
         .citation-block {
             background: #0f1e33;
             border-left: 3px solid #5eead4;
@@ -529,7 +436,6 @@ def apply_styles():
             margin: 3rem 0;
         }
         
-        /* FOOTER */
         .footer {
             margin-top: 5rem;
             padding: 2rem 0;
@@ -543,9 +449,26 @@ def apply_styles():
 
 
 def render_navbar(active_page="home"):
-    """Beautiful HTML navbar with invisible Streamlit buttons overlaid for fast nav."""
+    """
+    Beautiful HTML navbar. Navigation is handled via query params
+    (?nav=screening etc) which trigger st.switch_page().
+    """
     
-    # Step 1: Render beautiful HTML navbar (visuals only)
+    # Check if a nav click happened via query params
+    if "nav" in st.query_params:
+        target = st.query_params["nav"]
+        st.query_params.clear()
+        nav_map = {
+            "home": "cardio_risk_app.py",
+            "screening": "pages/1_Screening_Tool.py",
+            "clinical": "pages/2_Clinical_Reference.py",
+            "clinicians": "pages/3_For_Clinicians.py",
+            "about": "pages/4_About.py",
+        }
+        if target in nav_map:
+            st.switch_page(nav_map[target])
+    
+    # Render the beautiful HTML navbar with links that set query params
     nav_items = [
         ("screening", "Screening Tool"),
         ("clinical", "Clinical Reference"),
@@ -556,44 +479,24 @@ def render_navbar(active_page="home"):
     links_html = ""
     for key, label in nav_items:
         cls = "active" if key == active_page else ""
-        links_html += f'<span class="nav-item {cls}">{label}</span>'
+        links_html += f'<a href="?nav={key}" target="_self" style="text-decoration:none;"><span class="nav-item {cls}">{label}</span></a>'
     
     st.markdown(f"""
     <div class="navbar">
-        <div class="navbar-logo">
-            <span class="logo-icon"></span>
-            CardioAI
-        </div>
+        <a href="?nav=home" target="_self" style="text-decoration:none;">
+            <div class="navbar-logo">
+                <span class="logo-icon"></span>
+                CardioAI
+            </div>
+        </a>
         <div class="navbar-links">
             {links_html}
         </div>
-        <div class="navbar-cta">Start Screening →</div>
+        <a href="?nav=screening" target="_self" style="text-decoration:none;">
+            <div class="navbar-cta">Start Screening →</div>
+        </a>
     </div>
     """, unsafe_allow_html=True)
-    
-    # Step 2: Overlay invisible Streamlit buttons on top of the navbar
-    st.markdown('<div class="invisible-nav-buttons">', unsafe_allow_html=True)
-    col_logo, col_spacer, col1, col2, col3, col4, col_cta = st.columns([2, 0.5, 1.2, 1.4, 1.2, 0.8, 1.5])
-    
-    with col_logo:
-        if st.button("logo", key="nav_logo"):
-            st.switch_page("cardio_risk_app.py")
-    with col1:
-        if st.button("screening", key="nav_screening"):
-            st.switch_page("pages/1_Screening_Tool.py")
-    with col2:
-        if st.button("clinical", key="nav_clinical"):
-            st.switch_page("pages/2_Clinical_Reference.py")
-    with col3:
-        if st.button("clinicians", key="nav_clinicians"):
-            st.switch_page("pages/3_For_Clinicians.py")
-    with col4:
-        if st.button("about", key="nav_about"):
-            st.switch_page("pages/4_About.py")
-    with col_cta:
-        if st.button("cta", key="nav_cta"):
-            st.switch_page("pages/1_Screening_Tool.py")
-    st.markdown('</div>', unsafe_allow_html=True)
 
 
 def render_footer():
