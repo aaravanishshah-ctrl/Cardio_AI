@@ -1,457 +1,185 @@
 # =============================================================================
-# Shared styling module for CardioAI multi-page app.
-# Import into each page with: from styles import apply_styles
+# CardioAI — SCREENING TOOL PAGE
 # =============================================================================
 
 import streamlit as st
+import pandas as pd
+import numpy as np
+import joblib
+import os
+from styles import apply_styles, render_navbar, render_footer
 
-def apply_styles():
+st.set_page_config(
+    page_title="Screening Tool — CardioAI",
+    page_icon="🔍",
+    layout="wide",
+    initial_sidebar_state="collapsed",
+)
+
+apply_styles()
+render_navbar(active_page="screening")
+
+# LOAD MODELS
+@st.cache_resource
+def load_models():
+    base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    gene_pipeline = joblib.load(os.path.join(base, "cardio_pipeline.pkl"))
+    encoder = joblib.load(os.path.join(base, "label_encoder.pkl"))
+    gene_cols = joblib.load(os.path.join(base, "gene_columns.pkl"))
+    clin_cols = joblib.load(os.path.join(base, "clinical_columns.pkl"))
+    clinical_model = joblib.load(os.path.join(base, "clinical_only_model.pkl"))
+    clinical_features = joblib.load(os.path.join(base, "clinical_feature_names.pkl"))
+    return gene_pipeline, encoder, gene_cols, clin_cols, clinical_model, clinical_features
+
+try:
+    (gene_pipeline, encoder, GENE_COLUMNS, CLIN_COLUMNS,
+     clinical_model, CLINICAL_FEATURES) = load_models()
+except FileNotFoundError as e:
+    st.error(f"Could not load model files: {e}")
+    st.stop()
+
+# HEADER
+st.markdown("""
+<div style="padding: 2rem 0;">
+    <div class="section-label">Screening Tool</div>
+    <h1 class="hero-title" style="font-size: 3.5rem;">Begin <span class="hero-title-accent">assessment.</span></h1>
+    <p class="hero-subtitle">
+        Choose your input mode below. Clinical mode uses lifestyle and 
+        vital-sign inputs. Genomic mode requires a normalized gene expression CSV.
+    </p>
+</div>
+""", unsafe_allow_html=True)
+
+input_mode = st.radio(
+    "",
+    ["Clinical / Lifestyle", "Gene Expression"],
+    horizontal=True,
+    label_visibility="collapsed",
+)
+use_gene_mode = "Gene" in input_mode
+st.markdown("<div style='margin: 2rem 0;'></div>", unsafe_allow_html=True)
+
+if not use_gene_mode:
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.markdown("**Demographics**")
+        age = st.number_input("Age (years)", 18, 100, 50)
+        gender_label = st.selectbox("Gender", ["Female", "Male"])
+        gender = 1 if gender_label == "Female" else 2
+        height = st.number_input("Height (cm)", 100, 220, 170)
+        weight = st.number_input("Weight (kg)", 30, 250, 75)
+        bmi = weight / ((height / 100) ** 2)
+        st.markdown(f"<div style='color:#5eead4; font-weight:600; margin-top:0.5rem;'>BMI: {bmi:.1f}</div>", unsafe_allow_html=True)
+    
+    with col2:
+        st.markdown("**Vitals & Labs**")
+        ap_hi = st.number_input("Systolic BP (mmHg)", 70, 250, 120)
+        ap_lo = st.number_input("Diastolic BP (mmHg)", 40, 200, 80)
+        chol_label = st.selectbox("Cholesterol Level", ["Normal", "Above Normal", "Well Above Normal"])
+        cholesterol = {"Normal": 1, "Above Normal": 2, "Well Above Normal": 3}[chol_label]
+        gluc_label = st.selectbox("Glucose Level", ["Normal", "Above Normal", "Well Above Normal"])
+        gluc = {"Normal": 1, "Above Normal": 2, "Well Above Normal": 3}[gluc_label]
+    
+    with col3:
+        st.markdown("**Lifestyle**")
+        smoke = 1 if st.selectbox("Smoking", ["No", "Yes"]) == "Yes" else 0
+        alco = 1 if st.selectbox("Alcohol intake", ["No", "Yes"]) == "Yes" else 0
+        active = 1 if st.selectbox("Physically active", ["Yes", "No"]) == "Yes" else 0
+else:
     st.markdown("""
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=swap');
-        
-        :root {
-            --bg-dark: #0a1628;
-            --bg-panel: #0f1e33;
-            --bg-card: #142943;
-            --teal: #5eead4;
-            --teal-bright: #6ee7d0;
-            --teal-dim: rgba(94, 234, 212, 0.15);
-            --text-primary: #ffffff;
-            --text-secondary: #94a3b8;
-            --text-muted: #64748b;
-            --border: rgba(94, 234, 212, 0.15);
-        }
-        
-        .stApp {
-            background-color: #0a1628;
-            background-image: 
-                linear-gradient(rgba(94, 234, 212, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(94, 234, 212, 0.03) 1px, transparent 1px);
-            background-size: 60px 60px;
-        }
-        
-        .main .block-container {
-            padding-top: 2rem;
-            padding-bottom: 3rem;
-            max-width: 1200px;
-        }
-        
-        #MainMenu {visibility: hidden;}
-        footer {visibility: hidden;}
-        header[data-testid="stHeader"] { background: transparent; }
-        
-        html, body, [class*="css"], p, div, span, label, li {
-            font-family: 'Inter', -apple-system, sans-serif !important;
-            color: #ffffff !important;
-        }
-        
-        h1, h2, h3, h4, h5, h6 {
-            font-family: 'Playfair Display', Georgia, serif !important;
-            color: #ffffff !important;
-            font-weight: 700 !important;
-            letter-spacing: -0.02em;
-        }
-        
-        /* NAVBAR */
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 0 2rem 0;
-            border-bottom: 1px solid rgba(94, 234, 212, 0.15);
-            margin-bottom: 3rem;
-        }
-        .navbar-logo {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            font-family: 'Playfair Display', serif;
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: white;
-        }
-        .logo-icon {
-            width: 32px;
-            height: 32px;
-            background: #5eead4;
-            border-radius: 8px;
-            display: inline-block;
-        }
-        .navbar-links {
-            display: flex;
-            gap: 2rem;
-            color: #94a3b8;
-            font-size: 0.95rem;
-        }
-        .navbar-links a { 
-            color: #94a3b8 !important; 
-            text-decoration: none; 
-            transition: color 0.2s;
-        }
-        .navbar-links a:hover { color: #5eead4 !important; }
-        .navbar-links a.active { color: #5eead4 !important; }
-        
-        /* HERO */
-        .hero-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.4rem 1rem;
-            border: 1px solid #5eead4;
-            border-radius: 999px;
-            color: #5eead4 !important;
-            font-size: 0.75rem;
-            font-weight: 600;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            margin-bottom: 1.5rem;
-        }
-        .hero-pill::before {
-            content: "";
-            width: 6px; height: 6px;
-            background: #5eead4;
-            border-radius: 50%;
-        }
-        
-        .hero-title {
-            font-family: 'Playfair Display', serif !important;
-            font-size: 4rem !important;
-            line-height: 1.05 !important;
-            font-weight: 700 !important;
-            color: white !important;
-            margin: 0 0 1.5rem 0 !important;
-            letter-spacing: -0.03em;
-        }
-        .hero-title-accent {
-            color: #5eead4 !important;
-            font-style: italic;
-            font-weight: 400 !important;
-        }
-        .hero-subtitle {
-            font-family: 'Inter', sans-serif !important;
-            font-size: 1.1rem;
-            line-height: 1.6;
-            color: #94a3b8 !important;
-            max-width: 620px;
-            margin-bottom: 2.5rem;
-        }
-        
-        /* SECTION LABELS */
-        .section-label {
-            color: #5eead4 !important;
-            font-size: 0.75rem;
-            font-weight: 600;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            margin-bottom: 1rem;
-        }
-        .section-title {
-            font-family: 'Playfair Display', serif !important;
-            font-size: 2.5rem !important;
-            color: white !important;
-            line-height: 1.15 !important;
-            margin-bottom: 1.5rem !important;
-        }
-        .section-subtitle {
-            font-size: 1.05rem;
-            color: #94a3b8 !important;
-            line-height: 1.7;
-            max-width: 700px;
-            margin-bottom: 3rem;
-        }
-        
-        /* STATS ROW */
-        .stats-row {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 2rem;
-            padding: 2rem 0;
-            border-top: 1px solid rgba(94, 234, 212, 0.15);
-            border-bottom: 1px solid rgba(94, 234, 212, 0.15);
-            margin: 3rem 0;
-        }
-        .stat-item { text-align: center; }
-        .stat-number {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.8rem;
-            font-weight: 700;
-            color: #5eead4 !important;
-            line-height: 1;
-            margin-bottom: 0.5rem;
-        }
-        .stat-label {
-            color: #94a3b8 !important;
-            font-size: 0.85rem;
-            line-height: 1.4;
-        }
-        
-        /* FEATURE CARDS */
-        .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.5rem;
-            padding: 2rem;
-            background: #0f1e33;
-            border: 1px solid rgba(94, 234, 212, 0.15);
-            border-radius: 16px;
-            margin: 2rem 0;
-        }
-        .feature-card { padding: 1.5rem; }
-        .feature-icon {
-            width: 48px;
-            height: 48px;
-            background: rgba(94, 234, 212, 0.15);
-            border: 1px solid rgba(94, 234, 212, 0.15);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-        .feature-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.25rem;
-            color: white !important;
-            font-weight: 700;
-            margin-bottom: 0.75rem;
-        }
-        .feature-desc {
-            color: #94a3b8 !important;
-            font-size: 0.95rem;
-            line-height: 1.6;
-        }
-        
-        /* BUTTONS */
-        .stButton > button {
-            background: #5eead4 !important;
-            color: #0a1628 !important;
-            border: none !important;
-            border-radius: 10px !important;
-            padding: 0.9rem 2rem !important;
-            font-family: 'Inter', sans-serif !important;
-            font-weight: 600 !important;
-            font-size: 1rem !important;
-            transition: all 0.2s !important;
-        }
-        .stButton > button:hover {
-            background: #6ee7d0 !important;
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(94, 234, 212, 0.25);
-        }
-        .stButton > button * { color: #0a1628 !important; }
-        
-        /* NUMBER INPUTS */
-        .stNumberInput input, .stTextInput input {
-            background: #142943 !important;
-            color: white !important;
-            border: 1px solid rgba(94, 234, 212, 0.15) !important;
-            border-radius: 8px !important;
-            padding: 0.6rem 0.9rem !important;
-            font-family: 'Inter', sans-serif !important;
-        }
-        .stNumberInput button {
-            background: #142943 !important;
-            color: white !important;
-            border: 1px solid rgba(94, 234, 212, 0.15) !important;
-        }
-        .stNumberInput button:hover {
-            background: rgba(94, 234, 212, 0.15) !important;
-        }
-        
-        /* ==================================================== */
-        /* DROPDOWN FIX — force dark navy bg, white text ALWAYS */
-        /* ==================================================== */
-        div[data-baseweb="select"] > div,
-        div[data-baseweb="select"] > div > div,
-        div[data-baseweb="select"] input {
-            background-color: #142943 !important;
-            color: white !important;
-            border-color: rgba(94, 234, 212, 0.15) !important;
-        }
-        div[data-baseweb="select"] * {
-            color: white !important;
-            font-family: 'Inter', sans-serif !important;
-        }
-        /* The selected value text */
-        div[data-baseweb="select"] div[role="button"] {
-            background-color: #142943 !important;
-            color: white !important;
-        }
-        /* Dropdown chevron (arrow) */
-        div[data-baseweb="select"] svg {
-            fill: #5eead4 !important;
-            color: #5eead4 !important;
-        }
-        /* Opened dropdown menu */
-        div[data-baseweb="popover"],
-        div[role="listbox"],
-        ul[role="listbox"] {
-            background-color: #142943 !important;
-            border: 1px solid rgba(94, 234, 212, 0.15) !important;
-        }
-        div[role="listbox"] *,
-        ul[role="listbox"] * {
-            background-color: #142943 !important;
-            color: white !important;
-            font-family: 'Inter', sans-serif !important;
-        }
-        li[role="option"]:hover,
-        div[role="option"]:hover {
-            background-color: rgba(94, 234, 212, 0.15) !important;
-        }
-        li[aria-selected="true"],
-        div[aria-selected="true"] {
-            background-color: rgba(94, 234, 212, 0.2) !important;
-            color: #5eead4 !important;
-        }
-        
-        /* LABELS */
-        .stTextInput label, .stNumberInput label, .stSelectbox label, .stRadio label {
-            color: #94a3b8 !important;
-            font-size: 0.85rem !important;
-            font-weight: 500 !important;
-        }
-        
-        /* RADIO */
-        .stRadio [role="radiogroup"] { gap: 1rem; }
-        .stRadio [role="radiogroup"] > label {
-            background: #0f1e33;
-            padding: 0.75rem 1.25rem;
-            border-radius: 10px;
-            border: 1px solid rgba(94, 234, 212, 0.15);
-        }
-        
-        /* ALERTS */
-        .stAlert {
-            background: #0f1e33 !important;
-            border: 1px solid rgba(94, 234, 212, 0.15) !important;
-            border-radius: 10px !important;
-        }
-        .stAlert * { color: white !important; }
-        
-        /* PROGRESS BAR */
-        .stProgress > div > div > div { background: #5eead4 !important; }
-        .stProgress > div > div { background: #142943 !important; }
-        
-        /* FILE UPLOADER */
-        [data-testid="stFileUploaderDropzone"] {
-            background: #0f1e33 !important;
-            border: 2px dashed rgba(94, 234, 212, 0.15) !important;
-            border-radius: 10px !important;
-        }
-        [data-testid="stFileUploaderDropzone"] * {
-            color: #94a3b8 !important;
-            font-family: 'Inter', sans-serif !important;
-        }
-        [data-testid="stFileUploaderDropzone"] button {
-            background: #5eead4 !important;
-            color: #0a1628 !important;
-            border: none !important;
-            border-radius: 8px !important;
-            padding: 0.5rem 1.2rem !important;
-            font-weight: 600 !important;
-        }
-        [data-testid="stFileUploaderDropzone"] button p { color: #0a1628 !important; }
-        [data-testid="stFileUploaderDropzone"] button span.material-icons,
-        [data-testid="stFileUploaderDropzone"] button span[class*="material"] {
-            display: none !important;
-        }
-        
-        /* RESULT CARDS */
-        .result-card {
-            background: #0f1e33;
-            border: 1px solid rgba(94, 234, 212, 0.15);
-            border-radius: 16px;
-            padding: 2rem;
-            margin: 1.5rem 0;
-        }
-        .risk-score-huge {
-            font-family: 'Playfair Display', serif;
-            font-size: 5rem;
-            font-weight: 700;
-            line-height: 1;
-            margin: 0.5rem 0;
-        }
-        
-        /* CITATIONS */
-        .citation-block {
-            background: #0f1e33;
-            border-left: 3px solid #5eead4;
-            padding: 1.5rem 2rem;
-            border-radius: 8px;
-            margin: 1.5rem 0;
-            font-size: 0.9rem;
-            line-height: 1.7;
-            color: #94a3b8;
-        }
-        .citation-block * { color: #94a3b8 !important; }
-        
-        /* HIDE SIDEBAR NAV (we use custom navbar instead) */
-        section[data-testid="stSidebar"] { display: none !important; }
-        button[kind="header"] { display: none !important; }
-        
-        hr {
-            border: none;
-            border-top: 1px solid rgba(94, 234, 212, 0.15);
-            margin: 3rem 0;
-        }
-        
-        /* FOOTER */
-        .footer {
-            margin-top: 5rem;
-            padding: 2rem 0;
-            border-top: 1px solid rgba(94, 234, 212, 0.15);
-            text-align: center;
-            color: #64748b;
-            font-size: 0.85rem;
-        }
-    </style>
-    """, unsafe_allow_html=True)
+    Upload a CSV where each row is a sample and each column is a gene symbol 
+    (e.g. TP53, IL6). Values should be normalized (log2 or z-score).
+    """)
+    uploaded_file = st.file_uploader("Gene expression CSV", type=["csv"])
+    gene_data = None
+    if uploaded_file:
+        gene_data = pd.read_csv(uploaded_file, index_col=0)
+        st.success(f"Loaded {gene_data.shape[0]} sample(s), {gene_data.shape[1]} genes")
 
+st.markdown("<div style='margin: 2rem 0;'></div>", unsafe_allow_html=True)
 
-def render_navbar(active_page="home"):
-    """Renders the top navbar with the active page highlighted."""
-    pages = {
-        "home": ("Home", "/"),
-        "screening": ("Screening Tool", "/Screening_Tool"),
-        "clinical": ("Clinical Reference", "/Clinical_Reference"),
-        "clinicians": ("For Clinicians", "/For_Clinicians"),
-        "about": ("About", "/About"),
-    }
+if st.button("Begin Assessment →", type="primary"):
+    st.markdown("<hr>", unsafe_allow_html=True)
+    st.markdown('<div class="section-label">Results</div>', unsafe_allow_html=True)
     
-    links_html = ""
-    for key, (label, url) in pages.items():
-        if key == "home":
-            continue  # skip home link (logo is home)
-        cls = "active" if key == active_page else ""
-        links_html += f'<a href="{url}" target="_self" class="{cls}">{label}</a>'
-    
-    st.markdown(f"""
-    <div class="navbar">
-        <a href="/" target="_self" style="text-decoration: none;">
-            <div class="navbar-logo">
-                <span class="logo-icon"></span>
-                CardioAI
+    if not use_gene_mode:
+        clin_input = pd.DataFrame([{
+            "age_years": age, "gender": gender, "bmi": bmi,
+            "ap_hi": ap_hi, "ap_lo": ap_lo,
+            "cholesterol": cholesterol, "gluc": gluc,
+            "smoke": smoke, "alco": alco, "active": active,
+        }])[CLINICAL_FEATURES]
+        
+        prob = clinical_model.predict_proba(clin_input)[0]
+        risk = prob[1] * 100
+        
+        if risk < 30:
+            level, color = "Low Risk", "#5eead4"
+        elif risk < 60:
+            level, color = "Moderate Risk", "#fbbf24"
+        else:
+            level, color = "High Risk", "#f87171"
+        
+        st.markdown(f"""
+        <div class="result-card">
+            <div style="color: #94a3b8; font-size: 0.9rem; letter-spacing: 0.1em; text-transform: uppercase;">
+                Overall Cardiovascular Risk
             </div>
-        </a>
-        <div class="navbar-links">
-            {links_html}
+            <div class="risk-score-huge" style="color: {color};">{risk:.1f}%</div>
+            <div style="font-family: 'Playfair Display', serif; font-size: 1.5rem; color: {color}; font-style: italic;">
+                {level}
+            </div>
         </div>
-        <a href="/Screening_Tool" target="_self" style="text-decoration: none;">
-            <div style="background: #5eead4; color: #0a1628; padding: 0.6rem 1.4rem; border-radius: 8px; font-weight: 600; font-size: 0.9rem;">
-                Start Screening →
-            </div>
-        </a>
-    </div>
-    """, unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
+        
+        st.progress(int(risk))
+        
+        st.markdown("<h3 style='margin-top: 2rem;'>Contributing Factors</h3>", unsafe_allow_html=True)
+        factors = []
+        if age > 55: factors.append(f"Age {age} — elevated risk after 55")
+        if bmi > 30: factors.append(f"BMI {bmi:.1f} — obese range")
+        elif bmi > 25: factors.append(f"BMI {bmi:.1f} — overweight range")
+        if ap_hi >= 140 or ap_lo >= 90: factors.append(f"BP {ap_hi}/{ap_lo} — hypertensive range")
+        if cholesterol >= 2: factors.append("Elevated cholesterol level")
+        if gluc >= 2: factors.append("Elevated glucose level")
+        if smoke: factors.append("Active smoker")
+        if not active: factors.append("Sedentary lifestyle")
+        
+        if factors:
+            for f in factors:
+                st.markdown(f"<div style='padding: 0.5rem 0; color: #94a3b8; border-bottom: 1px solid rgba(94, 234, 212, 0.15);'>→ {f}</div>", unsafe_allow_html=True)
+        else:
+            st.markdown("<div style='color: #5eead4; padding: 1rem 0;'>No major modifiable risk factors identified.</div>", unsafe_allow_html=True)
+    
+    else:
+        if gene_data is None:
+            st.warning("Please upload a gene expression CSV.")
+            st.stop()
+        
+        for idx in gene_data.index:
+            st.markdown(f"<h3>Sample: {idx}</h3>", unsafe_allow_html=True)
+            gene_vector = pd.Series(0.0, index=GENE_COLUMNS)
+            for gene in GENE_COLUMNS:
+                if gene in gene_data.columns:
+                    gene_vector[gene] = gene_data.loc[idx, gene]
+            clin_vector = pd.Series(0.0, index=CLIN_COLUMNS)
+            X_input = pd.DataFrame([pd.concat([gene_vector, clin_vector])])
+            probs = gene_pipeline.predict_proba(X_input)[0]
+            
+            for cls, p in zip(encoder.classes_, probs):
+                pct = p * 100
+                color = "#5eead4" if cls == "Healthy" else ("#fbbf24" if cls == "CAD" else "#f87171")
+                st.markdown(f"""
+                <div class="result-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div style="font-family: 'Playfair Display', serif; font-size: 1.4rem;">{cls}</div>
+                        <div style="font-family: 'Playfair Display', serif; font-size: 2rem; color: {color};">{pct:.1f}%</div>
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
+                st.progress(int(pct))
+    
+    st.markdown("<hr>", unsafe_allow_html=True)
+    st.info("Research and educational tool only. Not validated for clinical diagnosis.")
 
-
-def render_footer():
-    st.markdown("""
-    <div class="footer">
-        CardioAI — Research & educational tool. Not a diagnostic device.<br>
-        © 2025 — Built with clinical decision support in mind.
-    </div>
-    """, unsafe_allow_html=True)
+render_footer()
