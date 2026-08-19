@@ -28,18 +28,7 @@ st.markdown("""
         modeling with blood-based gene expression profiling — built for clinicians 
         and researchers who need precision, speed, and clarity.
     </p>
-    <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-        <a href="/Screening_Tool" target="_self" style="text-decoration: none;">
-            <div style="background: #5eead4; color: #0a1628; padding: 0.9rem 2rem; border-radius: 10px; font-weight: 600; display: inline-block;">
-                🕐 Begin Assessment
-            </div>
-        </a>
-        <a href="/Clinical_Reference" target="_self" style="text-decoration: none;">
-            <div style="background: transparent; color: white; padding: 0.9rem 2rem; border-radius: 10px; font-weight: 600; border: 1px solid rgba(94, 234, 212, 0.3); display: inline-block;">
-                Explore features →
-            </div>
-        </a>
-    </div>
+   
 </div>
 """, unsafe_allow_html=True)
 
@@ -75,6 +64,16 @@ st.markdown("""
         This tool provides a reproducible, scored risk assessment in minutes — 
         using either lifestyle factors alone or full gene expression profiles.
     </p>
+    # Hero CTA buttons
+col_cta1, col_cta2, col_cta_spacer = st.columns([1.5, 1.5, 5])
+with col_cta1:
+    if st.button("🕐 Begin Assessment", key="hero_begin"):
+        st.switch_page("pages/1_Screening_Tool.py")
+with col_cta2:
+    st.markdown('<div class="secondary-btn">', unsafe_allow_html=True)
+    if st.button("Explore features →", key="hero_explore"):
+        st.switch_page("pages/2_Clinical_Reference.py")
+    st.markdown('</div>', unsafe_allow_html=True)
 </div>
 
 <div class="feature-grid">
