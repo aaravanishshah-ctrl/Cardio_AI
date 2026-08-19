@@ -251,7 +251,90 @@ def apply_styles():
             transform: translateY(-2px);
             box-shadow: 0 10px 30px rgba(94, 234, 212, 0.25);
         }
-        .stButton > button * { color: #0a1628 !important; }
+        .stButton > button * { color: #0a1628 !important; } /* ============================================ */
+/* NAVBAR BUTTONS — styled to look like links   */
+/* ============================================ */
+
+/* Navbar link-style buttons (Screening Tool, Clinical Reference, etc.) */
+.nav-link-btn button {
+    background: transparent !important;
+    color: #94a3b8 !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0.5rem 0.75rem !important;
+    font-family: 'Inter', sans-serif !important;
+    font-weight: 400 !important;
+    font-size: 0.95rem !important;
+    transition: color 0.2s !important;
+}
+.nav-link-btn button:hover {
+    background: transparent !important;
+    color: #5eead4 !important;
+    transform: none !important;
+    box-shadow: none !important;
+}
+.nav-link-btn button * {
+    color: inherit !important;
+}
+.nav-link-btn.active button {
+    color: #5eead4 !important;
+}
+
+/* Logo button (top-left) */
+.nav-logo-btn button {
+    background: transparent !important;
+    color: white !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    font-family: 'Playfair Display', serif !important;
+    font-size: 1.4rem !important;
+    font-weight: 700 !important;
+    text-align: left !important;
+    justify-content: flex-start !important;
+}
+.nav-logo-btn button:hover {
+    background: transparent !important;
+    color: #5eead4 !important;
+    transform: none !important;
+    box-shadow: none !important;
+}
+.nav-logo-btn button * {
+    color: inherit !important;
+}
+
+/* CTA button (Start Screening, top-right) */
+.nav-cta-btn button {
+    background: #5eead4 !important;
+    color: #0a1628 !important;
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 0.6rem 1.4rem !important;
+    font-family: 'Inter', sans-serif !important;
+    font-weight: 600 !important;
+    font-size: 0.9rem !important;
+    transition: all 0.2s !important;
+}
+.nav-cta-btn button:hover {
+    background: #6ee7d0 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(94, 234, 212, 0.25) !important;
+}
+.nav-cta-btn button * {
+    color: #0a1628 !important;
+}
+
+/* Secondary button (outlined) — for "Explore features" */
+.secondary-btn button {
+    background: transparent !important;
+    color: white !important;
+    border: 1px solid rgba(94, 234, 212, 0.3) !important;
+}
+.secondary-btn button:hover {
+    background: rgba(94, 234, 212, 0.1) !important;
+    color: #5eead4 !important;
+}
+.secondary-btn button * { color: inherit !important; }
         
         /* NUMBER INPUTS */
         .stNumberInput input, .stTextInput input {
@@ -418,39 +501,54 @@ def apply_styles():
 
 
 def render_navbar(active_page="home"):
-    pages = {
-        "home": ("Home", "/"),
-        "screening": ("Screening Tool", "/Screening_Tool"),
-        "clinical": ("Clinical Reference", "/Clinical_Reference"),
-        "clinicians": ("For Clinicians", "/For_Clinicians"),
-        "about": ("About", "/About"),
-    }
+    """Renders the top navbar using native Streamlit buttons for fast navigation."""
     
-    links_html = ""
-    for key, (label, url) in pages.items():
-        if key == "home":
-            continue
-        cls = "active" if key == active_page else ""
-        links_html += f'<a href="{url}" target="_self" class="{cls}">{label}</a>'
+    col_logo, col_spacer, col_links, col_cta = st.columns([2, 1, 4, 1.5])
     
-    st.markdown(f"""
-    <div class="navbar">
-        <a href="/" target="_self" style="text-decoration: none;">
-            <div class="navbar-logo">
-                <span class="logo-icon"></span>
-                CardioAI
-            </div>
-        </a>
-        <div class="navbar-links">
-            {links_html}
-        </div>
-        <a href="/Screening_Tool" target="_self" style="text-decoration: none;">
-            <div style="background: #5eead4; color: #0a1628; padding: 0.6rem 1.4rem; border-radius: 8px; font-weight: 600; font-size: 0.9rem;">
-                Start Screening →
-            </div>
-        </a>
-    </div>
-    """, unsafe_allow_html=True)
+    with col_logo:
+        st.markdown('<div class="nav-logo-btn">', unsafe_allow_html=True)
+        if st.button("● CardioAI", key="nav_logo"):
+            st.switch_page("cardio_risk_app.py")
+        st.markdown('</div>', unsafe_allow_html=True)
+    
+    with col_links:
+        subcol1, subcol2, subcol3, subcol4 = st.columns(4)
+        
+        with subcol1:
+            active_cls = "active" if active_page == "screening" else ""
+            st.markdown(f'<div class="nav-link-btn {active_cls}">', unsafe_allow_html=True)
+            if st.button("Screening Tool", key="nav_screening"):
+                st.switch_page("pages/1_Screening_Tool.py")
+            st.markdown('</div>', unsafe_allow_html=True)
+        
+        with subcol2:
+            active_cls = "active" if active_page == "clinical" else ""
+            st.markdown(f'<div class="nav-link-btn {active_cls}">', unsafe_allow_html=True)
+            if st.button("Clinical Reference", key="nav_clinical"):
+                st.switch_page("pages/2_Clinical_Reference.py")
+            st.markdown('</div>', unsafe_allow_html=True)
+        
+        with subcol3:
+            active_cls = "active" if active_page == "clinicians" else ""
+            st.markdown(f'<div class="nav-link-btn {active_cls}">', unsafe_allow_html=True)
+            if st.button("For Clinicians", key="nav_clinicians"):
+                st.switch_page("pages/3_For_Clinicians.py")
+            st.markdown('</div>', unsafe_allow_html=True)
+        
+        with subcol4:
+            active_cls = "active" if active_page == "about" else ""
+            st.markdown(f'<div class="nav-link-btn {active_cls}">', unsafe_allow_html=True)
+            if st.button("About", key="nav_about"):
+                st.switch_page("pages/4_About.py")
+            st.markdown('</div>', unsafe_allow_html=True)
+    
+    with col_cta:
+        st.markdown('<div class="nav-cta-btn">', unsafe_allow_html=True)
+        if st.button("Start Screening →", key="nav_cta"):
+            st.switch_page("pages/1_Screening_Tool.py")
+        st.markdown('</div>', unsafe_allow_html=True)
+    
+    st.markdown("<hr style='margin: 1rem 0 3rem 0;'>", unsafe_allow_html=True)
 
 
 def render_footer():
