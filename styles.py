@@ -10,9 +10,25 @@ def apply_styles():
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        html, body {
+        /* ==================================================== */
+        /* FIX 1: Kill white flash EVERYWHERE                   */
+        /* ==================================================== */
+        html, body, #root, .stApp, .main, .block-container,
+        [data-testid="stAppViewContainer"],
+        [data-testid="stAppViewBlockContainer"],
+        [data-testid="stMain"],
+        [data-testid="stMainBlockContainer"],
+        iframe {
             background-color: #0a1628 !important;
             color: white;
+        }
+        
+        /* Force the entire viewport background */
+        html {
+            background: #0a1628 !important;
+        }
+        body {
+            background: #0a1628 !important;
         }
         
         :root {
@@ -29,7 +45,7 @@ def apply_styles():
         }
         
         .stApp {
-            background-color: #0a1628;
+            background-color: #0a1628 !important;
             background-image: 
                 linear-gradient(rgba(94, 234, 212, 0.03) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(94, 234, 212, 0.03) 1px, transparent 1px);
@@ -42,9 +58,28 @@ def apply_styles():
             max-width: 1200px;
         }
         
-        #MainMenu {visibility: hidden;}
-        footer {visibility: hidden;}
-        header[data-testid="stHeader"] { background: transparent; }
+        /* ==================================================== */
+        /* FIX 3: Hide the floating page name label             */
+        /* ==================================================== */
+        #MainMenu {visibility: hidden !important;}
+        footer {visibility: hidden !important;}
+        header[data-testid="stHeader"] { 
+            background: transparent !important; 
+            display: none !important;
+        }
+        /* Hide the little page name that appears top-left */
+        [data-testid="stDecoration"] { display: none !important; }
+        [data-testid="stToolbar"] { display: none !important; }
+        [data-testid="stStatusWidget"] { display: none !important; }
+        .stAppHeader { display: none !important; }
+        [data-testid="stAppViewContainer"] > section > div:first-child > div:first-child:has(> [data-testid="stMarkdownContainer"] > p) {
+            display: none !important;
+        }
+        /* Hide the "app_name" label that Streamlit renders */
+        div[class*="viewerBadge"] { display: none !important; }
+        a[href*="streamlit.io"] { display: none !important; }
+        /* Nuclear option: hide anything positioned at top-left that's not the navbar */
+        .stApp > header { display: none !important; }
         
         .stSpinner > div { border-top-color: #5eead4 !important; }
         
@@ -60,9 +95,7 @@ def apply_styles():
             letter-spacing: -0.02em;
         }
         
-        /* ==================================================== */
-        /* NAVBAR — beautiful HTML                              */
-        /* ==================================================== */
+        /* NAVBAR */
         .navbar {
             display: flex;
             justify-content: space-between;
@@ -117,32 +150,6 @@ def apply_styles():
             box-shadow: 0 6px 20px rgba(94, 234, 212, 0.25);
         }
         
-        /* ==================================================== */
-        /* NUCLEAR INVISIBLE BUTTONS                            */
-        /* Uses visibility: collapse + zero height              */
-        /* ==================================================== */
-        div[data-testid="stVerticalBlock"] div[data-testid="element-container"]:has(.hide-me),
-        div[data-testid="element-container"]:has(.hide-me) {
-            height: 0 !important;
-            min-height: 0 !important;
-            max-height: 0 !important;
-            padding: 0 !important;
-            margin: 0 !important;
-            overflow: hidden !important;
-            visibility: hidden !important;
-        }
-        
-        /* Hidden button trigger area — clickable text link that fires the button */
-        .hidden-nav-trigger {
-            position: absolute;
-            top: 1.5rem;
-            display: inline-block;
-            cursor: pointer;
-            color: transparent !important;
-            width: auto;
-            padding: 0.5rem 0.75rem;
-        }
-        
         /* HERO */
         .hero-pill {
             display: inline-flex;
@@ -164,7 +171,6 @@ def apply_styles():
             background: #5eead4;
             border-radius: 50%;
         }
-        
         .hero-title {
             font-family: 'Playfair Display', serif !important;
             font-size: 4rem !important;
@@ -274,7 +280,7 @@ def apply_styles():
             line-height: 1.6;
         }
         
-        /* NORMAL BUTTONS (form pages — Predict, Begin Assessment) */
+        /* NORMAL BUTTONS */
         .stButton > button {
             background: #5eead4 !important;
             color: #0a1628 !important;
@@ -311,34 +317,55 @@ def apply_styles():
             background: rgba(94, 234, 212, 0.15) !important;
         }
         
-        /* DROPDOWN FIX */
+        /* ==================================================== */
+        /* FIX 2: DROPDOWN — force navy bg + white text ALWAYS  */
+        /* ==================================================== */
+        /* Target every possible dropdown selector */
+        .stSelectbox, 
+        .stSelectbox > div,
+        .stSelectbox > div > div,
+        div[data-baseweb="select"],
         div[data-baseweb="select"] > div,
         div[data-baseweb="select"] > div > div,
-        div[data-baseweb="select"] input {
+        div[data-baseweb="select"] > div > div > div,
+        div[data-baseweb="select"] input,
+        div[data-baseweb="select"] div[role="button"],
+        div[data-baseweb="base-input"],
+        div[data-baseweb="base-input"] > div,
+        [data-baseweb="select"] * {
             background-color: #142943 !important;
             color: white !important;
             border-color: rgba(94, 234, 212, 0.15) !important;
         }
-        div[data-baseweb="select"] * {
+        
+        /* The actual visible text of selected value */
+        div[data-baseweb="select"] div[role="button"] > div,
+        div[data-baseweb="select"] span,
+        .stSelectbox span {
             color: white !important;
+            background-color: transparent !important;
             font-family: 'Inter', sans-serif !important;
         }
-        div[data-baseweb="select"] div[role="button"] {
-            background-color: #142943 !important;
-            color: white !important;
-        }
+        
+        /* Chevron arrow */
         div[data-baseweb="select"] svg {
             fill: #5eead4 !important;
             color: #5eead4 !important;
         }
+        
+        /* Opened dropdown menu (popover) */
         div[data-baseweb="popover"],
+        div[data-baseweb="popover"] > div,
+        div[data-baseweb="popover"] ul,
         div[role="listbox"],
         ul[role="listbox"] {
             background-color: #142943 !important;
             border: 1px solid rgba(94, 234, 212, 0.15) !important;
         }
+        div[data-baseweb="popover"] *,
         div[role="listbox"] *,
-        ul[role="listbox"] * {
+        ul[role="listbox"] *,
+        li[role="option"] {
             background-color: #142943 !important;
             color: white !important;
             font-family: 'Inter', sans-serif !important;
@@ -359,14 +386,46 @@ def apply_styles():
             font-weight: 500 !important;
         }
         
+        /* RADIO buttons — also make navy with teal accent */
         .stRadio [role="radiogroup"] { gap: 1rem; }
         .stRadio [role="radiogroup"] > label {
-            background: #0f1e33;
+            background: #142943 !important;
             padding: 0.75rem 1.25rem;
             border-radius: 10px;
-            border: 1px solid rgba(94, 234, 212, 0.15);
+            border: 1px solid rgba(94, 234, 212, 0.15) !important;
+        }
+        .stRadio [role="radiogroup"] > label > div:first-child {
+            background: transparent !important;
+        }
+        .stRadio [role="radiogroup"] > label > div:first-child > div {
+            border-color: #5eead4 !important;
+        }
+        /* Selected radio dot */
+        .stRadio [role="radiogroup"] > label[data-checked="true"] > div:first-child > div {
+            background-color: #5eead4 !important;
+        }
+        /* Fix the red/coral color on radio */
+        .stRadio input[type="radio"]:checked + div {
+            background: #5eead4 !important;
+            border-color: #5eead4 !important;
+        }
+        .stRadio > div > label > div > div {
+            background: transparent !important;
+        }
+        /* BaseWeb radio button styling */
+        div[data-baseweb="radio"] div[role="radio"] {
+            background: transparent !important;
+            border-color: rgba(94, 234, 212, 0.5) !important;
+        }
+        div[data-baseweb="radio"] div[role="radio"][aria-checked="true"] {
+            background: #5eead4 !important;
+            border-color: #5eead4 !important;
+        }
+        div[data-baseweb="radio"] div[role="radio"][aria-checked="true"] > div {
+            background: #0a1628 !important;
         }
         
+        /* ALERTS */
         .stAlert {
             background: #0f1e33 !important;
             border: 1px solid rgba(94, 234, 212, 0.15) !important;
@@ -445,16 +504,18 @@ def apply_styles():
             font-size: 0.85rem;
         }
     </style>
+    
+    <script>
+        // Force body background on page load to eliminate white flash
+        document.documentElement.style.backgroundColor = '#0a1628';
+        document.body.style.backgroundColor = '#0a1628';
+    </script>
     """, unsafe_allow_html=True)
 
 
 def render_navbar(active_page="home"):
-    """
-    Beautiful HTML navbar. Navigation is handled via query params
-    (?nav=screening etc) which trigger st.switch_page().
-    """
+    """Beautiful HTML navbar. Navigation via query params."""
     
-    # Check if a nav click happened via query params
     if "nav" in st.query_params:
         target = st.query_params["nav"]
         st.query_params.clear()
@@ -468,7 +529,6 @@ def render_navbar(active_page="home"):
         if target in nav_map:
             st.switch_page(nav_map[target])
     
-    # Render the beautiful HTML navbar with links that set query params
     nav_items = [
         ("screening", "Screening Tool"),
         ("clinical", "Clinical Reference"),
