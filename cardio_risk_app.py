@@ -120,16 +120,56 @@ st.markdown("""
         background-color: #0a1f44 !important;
     }
     
-    /* File uploader */
-    .stFileUploader > div {
+        /* --- FILE UPLOADER FIX --- */
+    /* Label above the uploader — WHITE */
+    .stFileUploader > label,
+    .stFileUploader label,
+    [data-testid="stFileUploader"] label,
+    [data-testid="stFileUploader"] > label {
+        color: white !important;
+        font-family: 'Georgia', serif !important;
+        font-weight: 600;
+    }
+    
+    /* Drop zone background — white */
+    [data-testid="stFileUploaderDropzone"] {
         background-color: white !important;
         border-radius: 8px;
     }
-    .stFileUploader label {
-        color: white !important;
-    }
-    .stFileUploader * {
+    
+    /* Text inside drop zone (e.g. "200MB per file • CSV") — dark */
+    [data-testid="stFileUploaderDropzone"] * {
         color: #0a1f44 !important;
+        font-family: 'Georgia', serif !important;
+    }
+    
+    /* --- FIX OVERLAPPING "Browse files" BUTTON --- */
+    [data-testid="stFileUploaderDropzone"] button {
+        background-color: white !important;
+        color: #0a1f44 !important;
+        border: 2px solid #0a1f44 !important;
+        border-radius: 8px !important;
+        padding: 0.4rem 1.2rem !important;
+        font-family: 'Georgia', serif !important;
+        font-weight: 600 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 0.5rem !important;
+        min-width: auto !important;
+        white-space: nowrap !important;
+    }
+    
+    /* Hide the tiny duplicate icon that causes overlap */
+    [data-testid="stFileUploaderDropzone"] button svg {
+        display: none !important;
+    }
+    
+    /* Ensure button text is properly spaced */
+    [data-testid="stFileUploaderDropzone"] button span,
+    [data-testid="stFileUploaderDropzone"] button p {
+        color: #0a1f44 !important;
+        margin: 0 !important;
+        padding: 0 !important;
     }
 </style>
 """, unsafe_allow_html=True)
