@@ -1,185 +1,94 @@
 # =============================================================================
-# CardioAI — SCREENING TOOL PAGE
+# CardioAI — FOR CLINICIANS PAGE (technical / methodology)
 # =============================================================================
 
 import streamlit as st
-import pandas as pd
-import numpy as np
-import joblib
-import os
 from styles import apply_styles, render_navbar, render_footer
 
-st.set_page_config(
-    page_title="Screening Tool — CardioAI",
-    page_icon="🔍",
-    layout="wide",
-    initial_sidebar_state="collapsed",
-)
-
+st.set_page_config(page_title="For Clinicians — CardioAI", page_icon="🧬", layout="wide", initial_sidebar_state="collapsed")
 apply_styles()
-render_navbar(active_page="screening")
+render_navbar(active_page="clinicians")
 
-# LOAD MODELS
-@st.cache_resource
-def load_models():
-    base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    gene_pipeline = joblib.load(os.path.join(base, "cardio_pipeline.pkl"))
-    encoder = joblib.load(os.path.join(base, "label_encoder.pkl"))
-    gene_cols = joblib.load(os.path.join(base, "gene_columns.pkl"))
-    clin_cols = joblib.load(os.path.join(base, "clinical_columns.pkl"))
-    clinical_model = joblib.load(os.path.join(base, "clinical_only_model.pkl"))
-    clinical_features = joblib.load(os.path.join(base, "clinical_feature_names.pkl"))
-    return gene_pipeline, encoder, gene_cols, clin_cols, clinical_model, clinical_features
-
-try:
-    (gene_pipeline, encoder, GENE_COLUMNS, CLIN_COLUMNS,
-     clinical_model, CLINICAL_FEATURES) = load_models()
-except FileNotFoundError as e:
-    st.error(f"Could not load model files: {e}")
-    st.stop()
-
-# HEADER
 st.markdown("""
 <div style="padding: 2rem 0;">
-    <div class="section-label">Screening Tool</div>
-    <h1 class="hero-title" style="font-size: 3.5rem;">Begin <span class="hero-title-accent">assessment.</span></h1>
+    <div class="section-label">For Clinicians</div>
+    <h1 class="hero-title" style="font-size: 3.5rem;">Methodology &<br><span class="hero-title-accent">model architecture.</span></h1>
     <p class="hero-subtitle">
-        Choose your input mode below. Clinical mode uses lifestyle and 
-        vital-sign inputs. Genomic mode requires a normalized gene expression CSV.
+        Technical documentation on how CardioAI's models are trained, validated, 
+        and intended to be used in clinical decision-support workflows.
     </p>
 </div>
 """, unsafe_allow_html=True)
 
-input_mode = st.radio(
-    "",
-    ["Clinical / Lifestyle", "Gene Expression"],
-    horizontal=True,
-    label_visibility="collapsed",
-)
-use_gene_mode = "Gene" in input_mode
-st.markdown("<div style='margin: 2rem 0;'></div>", unsafe_allow_html=True)
+st.markdown("### Model Architecture")
+st.markdown("""
+CardioAI uses two independently trained models depending on input mode:
 
-if not use_gene_mode:
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        st.markdown("**Demographics**")
-        age = st.number_input("Age (years)", 18, 100, 50)
-        gender_label = st.selectbox("Gender", ["Female", "Male"])
-        gender = 1 if gender_label == "Female" else 2
-        height = st.number_input("Height (cm)", 100, 220, 170)
-        weight = st.number_input("Weight (kg)", 30, 250, 75)
-        bmi = weight / ((height / 100) ** 2)
-        st.markdown(f"<div style='color:#5eead4; font-weight:600; margin-top:0.5rem;'>BMI: {bmi:.1f}</div>", unsafe_allow_html=True)
-    
-    with col2:
-        st.markdown("**Vitals & Labs**")
-        ap_hi = st.number_input("Systolic BP (mmHg)", 70, 250, 120)
-        ap_lo = st.number_input("Diastolic BP (mmHg)", 40, 200, 80)
-        chol_label = st.selectbox("Cholesterol Level", ["Normal", "Above Normal", "Well Above Normal"])
-        cholesterol = {"Normal": 1, "Above Normal": 2, "Well Above Normal": 3}[chol_label]
-        gluc_label = st.selectbox("Glucose Level", ["Normal", "Above Normal", "Well Above Normal"])
-        gluc = {"Normal": 1, "Above Normal": 2, "Well Above Normal": 3}[gluc_label]
-    
-    with col3:
-        st.markdown("**Lifestyle**")
-        smoke = 1 if st.selectbox("Smoking", ["No", "Yes"]) == "Yes" else 0
-        alco = 1 if st.selectbox("Alcohol intake", ["No", "Yes"]) == "Yes" else 0
-        active = 1 if st.selectbox("Physically active", ["Yes", "No"]) == "Yes" else 0
-else:
-    st.markdown("""
-    Upload a CSV where each row is a sample and each column is a gene symbol 
-    (e.g. TP53, IL6). Values should be normalized (log2 or z-score).
-    """)
-    uploaded_file = st.file_uploader("Gene expression CSV", type=["csv"])
-    gene_data = None
-    if uploaded_file:
-        gene_data = pd.read_csv(uploaded_file, index_col=0)
-        st.success(f"Loaded {gene_data.shape[0]} sample(s), {gene_data.shape[1]} genes")
+**Clinical Model (XGBoost)** — trained on the Kaggle Cardiovascular Disease 
+dataset (n=70,000, positive rate ~50%). Features include age, gender, BMI, 
+systolic/diastolic BP, cholesterol level (categorical 1-3), glucose level 
+(categorical 1-3), smoking status, alcohol intake, and physical activity. 
+Preprocessing: median imputation for missing values, StandardScaler 
+normalization. Training: 80/20 stratified split, 300 trees, max depth 5, 
+learning rate 0.05.
 
-st.markdown("<div style='margin: 2rem 0;'></div>", unsafe_allow_html=True)
+**Genomic Model (XGBoost multiclass)** — trained on NCBI GEO series GSE20680 
+and GSE20681 (CAD, n=~200 each) and GSE59867 (Heart Failure progression, 
+n=34 confirmed HF patients across timepoints). Preprocessing: log2 
+transformation, per-dataset z-score normalization for batch effect 
+correction, then intersection to ~16,000 common gene symbols across 
+platforms. Feature selection: top 500 genes by ANOVA F-score (SelectKBest).
+""")
 
-if st.button("Begin Assessment →", type="primary"):
-    st.markdown("<hr>", unsafe_allow_html=True)
-    st.markdown('<div class="section-label">Results</div>', unsafe_allow_html=True)
-    
-    if not use_gene_mode:
-        clin_input = pd.DataFrame([{
-            "age_years": age, "gender": gender, "bmi": bmi,
-            "ap_hi": ap_hi, "ap_lo": ap_lo,
-            "cholesterol": cholesterol, "gluc": gluc,
-            "smoke": smoke, "alco": alco, "active": active,
-        }])[CLINICAL_FEATURES]
-        
-        prob = clinical_model.predict_proba(clin_input)[0]
-        risk = prob[1] * 100
-        
-        if risk < 30:
-            level, color = "Low Risk", "#5eead4"
-        elif risk < 60:
-            level, color = "Moderate Risk", "#fbbf24"
-        else:
-            level, color = "High Risk", "#f87171"
-        
-        st.markdown(f"""
-        <div class="result-card">
-            <div style="color: #94a3b8; font-size: 0.9rem; letter-spacing: 0.1em; text-transform: uppercase;">
-                Overall Cardiovascular Risk
-            </div>
-            <div class="risk-score-huge" style="color: {color};">{risk:.1f}%</div>
-            <div style="font-family: 'Playfair Display', serif; font-size: 1.5rem; color: {color}; font-style: italic;">
-                {level}
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        st.progress(int(risk))
-        
-        st.markdown("<h3 style='margin-top: 2rem;'>Contributing Factors</h3>", unsafe_allow_html=True)
-        factors = []
-        if age > 55: factors.append(f"Age {age} — elevated risk after 55")
-        if bmi > 30: factors.append(f"BMI {bmi:.1f} — obese range")
-        elif bmi > 25: factors.append(f"BMI {bmi:.1f} — overweight range")
-        if ap_hi >= 140 or ap_lo >= 90: factors.append(f"BP {ap_hi}/{ap_lo} — hypertensive range")
-        if cholesterol >= 2: factors.append("Elevated cholesterol level")
-        if gluc >= 2: factors.append("Elevated glucose level")
-        if smoke: factors.append("Active smoker")
-        if not active: factors.append("Sedentary lifestyle")
-        
-        if factors:
-            for f in factors:
-                st.markdown(f"<div style='padding: 0.5rem 0; color: #94a3b8; border-bottom: 1px solid rgba(94, 234, 212, 0.15);'>→ {f}</div>", unsafe_allow_html=True)
-        else:
-            st.markdown("<div style='color: #5eead4; padding: 1rem 0;'>No major modifiable risk factors identified.</div>", unsafe_allow_html=True)
-    
-    else:
-        if gene_data is None:
-            st.warning("Please upload a gene expression CSV.")
-            st.stop()
-        
-        for idx in gene_data.index:
-            st.markdown(f"<h3>Sample: {idx}</h3>", unsafe_allow_html=True)
-            gene_vector = pd.Series(0.0, index=GENE_COLUMNS)
-            for gene in GENE_COLUMNS:
-                if gene in gene_data.columns:
-                    gene_vector[gene] = gene_data.loc[idx, gene]
-            clin_vector = pd.Series(0.0, index=CLIN_COLUMNS)
-            X_input = pd.DataFrame([pd.concat([gene_vector, clin_vector])])
-            probs = gene_pipeline.predict_proba(X_input)[0]
-            
-            for cls, p in zip(encoder.classes_, probs):
-                pct = p * 100
-                color = "#5eead4" if cls == "Healthy" else ("#fbbf24" if cls == "CAD" else "#f87171")
-                st.markdown(f"""
-                <div class="result-card">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <div style="font-family: 'Playfair Display', serif; font-size: 1.4rem;">{cls}</div>
-                        <div style="font-family: 'Playfair Display', serif; font-size: 2rem; color: {color};">{pct:.1f}%</div>
-                    </div>
-                </div>
-                """, unsafe_allow_html=True)
-                st.progress(int(pct))
-    
-    st.markdown("<hr>", unsafe_allow_html=True)
-    st.info("Research and educational tool only. Not validated for clinical diagnosis.")
+st.markdown("### Performance Metrics")
+st.markdown("""
+| Model | Accuracy | ROC AUC | Test Set Size |
+|---|---|---|---|
+| Clinical (XGBoost) | ~0.73 | ~0.80 | 13,919 patients |
+| Genomic (XGBoost) | ~0.65 | — | 86 samples |
+
+The clinical model's performance is comparable to published lifestyle-based 
+risk calculators. The genomic model has substantially smaller sample size 
+(particularly for Heart Failure, n=34), and results should be interpreted 
+as preliminary. Cross-validation F1-macro for the genomic model averages 
+~0.46 across 5 folds, with high variance between folds.
+""")
+
+st.markdown("### Intended Use")
+st.markdown("""
+CardioAI is designed as a **decision-support adjunct** for:
+- Preliminary risk stratification during initial patient assessment
+- Identifying patients who may benefit from expedited cardiology referral
+- Educational demonstration of AI-driven risk modeling
+- Research applications combining transcriptomic and clinical data
+
+**Not intended for:**
+- Sole basis for diagnosis or treatment decisions
+- Emergency triage
+- Replacing validated clinical risk scores (ASCVD, Framingham) in guideline-directed care
+- Pediatric or pregnant populations (training data was adult non-pregnant)
+""")
+
+st.markdown("### Known Limitations")
+st.markdown("""
+- **Dataset demographics**: The clinical training cohort is predominantly 
+European. Performance in other populations has not been validated.
+- **Genomic sample size**: The Heart Failure class in the genomic model 
+draws from a single study (GSE59867), limiting generalizability.
+- **No temporal validation**: Models were trained and tested on 
+cross-sectional data. Longitudinal predictive performance is untested.
+- **Feature availability**: Some risk factors that appear in guidelines 
+(family history, LDL/HDL breakdown, hs-CRP) are not present in the training 
+data and cannot be incorporated by this tool.
+- **Regulatory status**: This tool has not been reviewed by the FDA or 
+equivalent regulatory bodies and should not be marketed as a medical device.
+""")
+
+st.markdown("### Data Provenance")
+st.markdown("""
+- **Kaggle Cardiovascular Disease Dataset** — Public domain, 70,000 patient records
+- **NCBI GEO GSE20680, GSE20681** — Peripheral blood microarray, CAD case-control
+- **NCBI GEO GSE59867** — Post-STEMI longitudinal transcriptomics, HF progression
+""")
 
 render_footer()
