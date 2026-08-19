@@ -291,8 +291,7 @@ def apply_styles():
         .stButton > button * { color: #0a1628 !important; }
         
         /* ==================================================== */
-        /* CRITICAL: Make ALL widget WRAPPERS transparent       */
-        /* This removes the lighter blue "halo" behind labels   */
+        /* Widget WRAPPERS transparent (no lighter blue halo)   */
         /* ==================================================== */
         [data-testid="stSelectbox"],
         [data-testid="stNumberInput"],
@@ -307,7 +306,6 @@ def apply_styles():
             background: transparent !important;
         }
         
-        /* Labels should also have transparent bg */
         [data-testid="stWidgetLabel"],
         [data-testid="stWidgetLabel"] * {
             background-color: transparent !important;
@@ -315,7 +313,7 @@ def apply_styles():
         }
         
         /* ==================================================== */
-        /* NUMBER + TEXT INPUTS — the visible box               */
+        /* NUMBER + TEXT INPUTS                                 */
         /* ==================================================== */
         .stNumberInput input, .stTextInput input {
             background-color: #142943 !important;
@@ -336,68 +334,76 @@ def apply_styles():
         }
         
         /* ==================================================== */
-        /* DROPDOWN — make the input box match number inputs   */
+        /* DROPDOWN — force EXACT match to number input styling */
         /* ==================================================== */
+        div[data-baseweb="select"],
+        div[data-baseweb="select"] > div,
+        div[data-baseweb="select"] > div > div,
+        div[data-baseweb="select"] > div > div > div,
+        div[data-baseweb="select"] [class*="Select"],
+        div[data-baseweb="select"] [class*="Control"],
+        div[data-baseweb="select"] [class*="ValueContainer"],
+        div[data-baseweb="select"] [class*="valueContainer"],
+        div[data-baseweb="select"] [class*="Placeholder"],
+        div[data-baseweb="select"] [class*="SingleValue"],
+        div[data-baseweb="base-input"],
+        div[data-baseweb="base-input"] > div {
+            background-color: #142943 !important;
+            background: #142943 !important;
+        }
         
-        /* The visible box (BaseWeb select control) */
         div[data-baseweb="select"] > div:first-child {
             background-color: #142943 !important;
+            background: #142943 !important;
             border: 1px solid rgba(94, 234, 212, 0.15) !important;
             border-radius: 8px !important;
             min-height: 42px !important;
             padding: 0.1rem 0.5rem !important;
         }
         
-        /* KILL the opacity on selected value — was showing text as faded */
         div[data-baseweb="select"] div[role="button"],
         div[data-baseweb="select"] div[role="button"] *,
-        div[data-baseweb="select"] div[data-baseweb="select-option"],
         div[data-baseweb="select"] [class*="valueContainer"],
+        div[data-baseweb="select"] [class*="ValueContainer"],
         div[data-baseweb="select"] [class*="singleValue"],
-        div[data-baseweb="select"] [class*="ValueContainer"] {
-            color: #ffffff !important;
-            opacity: 1 !important;
-            -webkit-text-fill-color: #ffffff !important;
-            background-color: transparent !important;
-        }
-        
-        /* All spans, text inside the selected value display */
-        div[data-baseweb="select"] span {
+        div[data-baseweb="select"] [class*="SingleValue"] {
             color: #ffffff !important;
             opacity: 1 !important;
             -webkit-text-fill-color: #ffffff !important;
         }
         
-        /* Hidden input */
+        div[data-baseweb="select"] span,
         div[data-baseweb="select"] input {
             color: #ffffff !important;
-            background-color: transparent !important;
             opacity: 1 !important;
             -webkit-text-fill-color: #ffffff !important;
+            background-color: transparent !important;
+            background: transparent !important;
         }
         
-        /* Chevron */
         div[data-baseweb="select"] svg {
             fill: #5eead4 !important;
             color: #5eead4 !important;
             opacity: 1 !important;
         }
         
-        /* Opened menu */
         div[data-baseweb="popover"] {
             background-color: #142943 !important;
+            background: #142943 !important;
             border: 1px solid rgba(94, 234, 212, 0.15) !important;
             border-radius: 8px !important;
         }
-        div[data-baseweb="popover"] * {
-            background-color: transparent !important;
-        }
-        div[role="listbox"], ul[role="listbox"] {
+        div[data-baseweb="popover"] > div,
+        div[data-baseweb="popover"] > div > div,
+        div[role="listbox"],
+        ul[role="listbox"] {
             background-color: #142943 !important;
+            background: #142943 !important;
             border: none !important;
         }
+        
         li[role="option"], div[role="option"] {
-            background-color: transparent !important;
+            background-color: #142943 !important;
             color: #ffffff !important;
             opacity: 1 !important;
             -webkit-text-fill-color: #ffffff !important;
@@ -422,7 +428,7 @@ def apply_styles():
         }
         
         /* ==================================================== */
-        /* LABELS above inputs — no bg, just white text         */
+        /* LABELS above inputs                                  */
         /* ==================================================== */
         .stTextInput label, .stNumberInput label, .stSelectbox label, .stRadio label,
         [data-testid="stWidgetLabel"] label,
