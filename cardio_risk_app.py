@@ -1,10 +1,11 @@
 # =============================================================================
-# CardioAI — HOME PAGE
+# CardioAI — HOME PAGE (Landing Page)
 # =============================================================================
 
 import streamlit as st
 from styles import apply_styles, render_navbar, render_footer
 
+# 1. Page Configuration
 st.set_page_config(
     page_title="CardioAI — Clinical Decision Support",
     page_icon="🫀",
@@ -12,10 +13,11 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
+# 2. Apply global styles and navigation bar
 apply_styles()
 render_navbar(active_page="home")
 
-# Handle hero button query params
+# 3. Handle fast-navigation routing for the Hero buttons
 if "goto" in st.query_params:
     target = st.query_params["goto"]
     st.query_params.clear()
@@ -24,7 +26,7 @@ if "goto" in st.query_params:
     elif target == "clinical":
         st.switch_page("pages/2_Clinical_Reference.py")
 
-# HERO
+# 4. HERO SECTION
 st.markdown("""
 <div style="padding: 3rem 0 2rem 0;">
     <div class="hero-pill">Clinical Decision Support</div>
@@ -56,7 +58,7 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# STATS
+# 5. STATS ROW
 st.markdown("""
 <div class="stats-row">
     <div class="stat-item">
@@ -78,7 +80,7 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# WHAT THIS TOOL DOES
+# 6. WHAT THIS TOOL DOES / FEATURE GRID
 st.markdown("""
 <div style="padding: 2rem 0;">
     <div class="section-label">What This Tool Does</div>
@@ -96,15 +98,15 @@ st.markdown("""
         <div class="feature-title">Risk stratification</div>
         <div class="feature-desc">
             Composite 0–100 risk score weighted across demographics, vitals, 
-            labs, and lifestyle — with per-factor breakdowns.
+            labs, and lifestyle — with rule-based per-condition breakdowns.
         </div>
     </div>
     <div class="feature-card">
         <div class="feature-icon">🧬</div>
         <div class="feature-title">Genomic profiling</div>
         <div class="feature-desc">
-            Classifies blood samples as CAD, Heart Failure, or Healthy using 
-            transcriptomic signatures from NCBI GEO datasets.
+            Classifies blood samples across 6 classes: CAD, Heart Failure, AFib, 
+            Hypertension, Ischemic Stroke, or Healthy using NCBI GEO datasets.
         </div>
     </div>
     <div class="feature-card">
@@ -118,4 +120,5 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
+# 7. FOOTER
 render_footer()
