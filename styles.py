@@ -374,38 +374,46 @@ def apply_styles():
         }
 
         /* ==================================================== */
-        /* DROPDOWNS                                            */
+        /* DROPDOWNS (SELECTBOX) — FORCE CRISP WHITE BACKGROUND */
         /* ==================================================== */
+        div[data-testid="stSelectbox"] [data-baseweb="select"],
+        div[data-testid="stSelectbox"] [data-baseweb="select"] *,
+        div[data-baseweb="select"],
+        div[data-baseweb="select"] > div,
+        div[data-baseweb="select"] > div > div,
+        div[data-baseweb="select"] [class*="ValueContainer"],
+        div[data-baseweb="select"] [class*="Control"],
+        div[data-baseweb="select"] [class*="Value"] {
+            background-color: #ffffff !important;
+            background: #ffffff !important;
+            color: #0f172a !important;
+            -webkit-text-fill-color: #0f172a !important;
+        }
+
         div[data-baseweb="select"] > div:first-child {
             background-color: #ffffff !important;
             background: #ffffff !important;
             border: 1px solid #e2e8f0 !important;
             border-radius: 6px !important;
-            min-height: 40px !important;
+            min-height: 42px !important;
             box-shadow: var(--shadow-sm) !important;
         }
-        div[data-baseweb="select"] div[role="button"],
-        div[data-baseweb="select"] span,
-        div[data-baseweb="select"] input {
-            color: #0f172a !important;
-            -webkit-text-fill-color: #0f172a !important;
-            background-color: transparent !important;
-        }
+
         div[data-baseweb="select"] svg {
-            fill: #64748b !important;
-            color: #64748b !important;
+            fill: #1e40af !important;
+            color: #1e40af !important;
+            opacity: 1 !important;
         }
-        div[data-baseweb="popover"] {
-            background-color: #ffffff !important;
-            border: 1px solid #e2e8f0 !important;
-            border-radius: 6px !important;
-            box-shadow: var(--shadow-md) !important;
-        }
-        div[data-baseweb="popover"] > div,
+
+        div[data-baseweb="popover"],
+        div[data-baseweb="popover"] *,
         div[role="listbox"],
         ul[role="listbox"] {
             background-color: #ffffff !important;
+            background: #ffffff !important;
+            border-color: #e2e8f0 !important;
         }
+
         li[role="option"], div[role="option"] {
             background-color: #ffffff !important;
             color: #0f172a !important;
@@ -413,15 +421,14 @@ def apply_styles():
             font-family: 'Inter', sans-serif !important;
             padding: 0.55rem 0.9rem !important;
         }
+
         li[role="option"]:hover, div[role="option"]:hover {
             background-color: #f1f5f9 !important;
         }
+
         li[aria-selected="true"], div[aria-selected="true"] {
             background-color: #dbeafe !important;
-        }
-        li[aria-selected="true"] *, div[aria-selected="true"] * {
             color: #1e40af !important;
-            -webkit-text-fill-color: #1e40af !important;
         }
 
         /* ==================================================== */
@@ -561,7 +568,7 @@ def apply_styles():
         }
 
         /* ==================================================== */
-        /* HERO BUTTON OVERRIDES (Home page inline styles)      */
+        /* HERO BUTTON OVERRIDES                                */
         /* ==================================================== */
         a[href*="goto=screening"] > div {
             background: #1e40af !important;
