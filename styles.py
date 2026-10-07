@@ -1,6 +1,6 @@
 # =============================================================================
 # Shared styling module for CardioAI multi-page app.
-# Clinical / Medical aesthetic + Mobile Responsive
+# Clinical / Medical aesthetic + Custom SVG Logo + Mobile Responsive
 # =============================================================================
 
 import streamlit as st
@@ -115,20 +115,12 @@ def apply_styles():
         .navbar-logo {
             display: flex;
             align-items: center;
-            gap: 0.6rem;
-            font-size: 1.2rem;
+            gap: 0.65rem;
+            font-size: 1.25rem;
             font-weight: 700;
             color: #0f172a !important;
             letter-spacing: -0.02em;
             white-space: nowrap;
-            flex-shrink: 0;
-        }
-        .logo-icon {
-            width: 28px;
-            height: 28px;
-            background: #1e40af;
-            border-radius: 6px;
-            display: inline-block;
             flex-shrink: 0;
         }
         .navbar-links {
@@ -698,7 +690,7 @@ def apply_styles():
 
 
 def render_navbar(active_page="home"):
-  """Clean clinical navbar — mobile responsive."""
+  """Clean clinical navbar with custom SVG Logo — mobile responsive."""
 
   if "nav" in st.query_params:
     target = st.query_params["nav"]
@@ -733,7 +725,11 @@ def render_navbar(active_page="home"):
     <div class="navbar">
         <a href="?nav=home" target="_self" style="text-decoration:none;">
             <div class="navbar-logo">
-                <span class="logo-icon"></span>
+                <svg width="30" height="30" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+                    <rect width="32" height="32" rx="8" fill="#1E40AF"/>
+                    <path d="M16 25.5C16 25.5 7 19 7 12.5C7 9.46243 9.46243 7 12.5 7C14.3644 7 16 7.92543 16 9.5C16 7.92543 17.6356 7 19.5 7C22.5376 7 25 9.46243 25 12.5C25 19 16 25.5 16 25.5Z" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                    <path d="M10.5 15H13L14.5 11.5L17 18.5L18.5 15H21.5" stroke="#93C5FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
                 CardioAI
             </div>
         </a>
