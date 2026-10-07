@@ -326,28 +326,6 @@ def apply_styles():
         .stButton > button * { color: #ffffff !important; }
 
         /* ==================================================== */
-        /* WIDGET WRAPPERS                                      */
-        /* ==================================================== */
-        [data-testid="stSelectbox"],
-        [data-testid="stNumberInput"],
-        [data-testid="stTextInput"],
-        [data-testid="stRadio"],
-        [data-testid="stFileUploader"],
-        div[data-testid="stSelectbox"] > div,
-        div[data-testid="stNumberInput"] > div,
-        div[data-testid="stTextInput"] > div,
-        div[data-testid="element-container"] {
-            background-color: transparent !important;
-            background: transparent !important;
-        }
-
-        [data-testid="stWidgetLabel"],
-        [data-testid="stWidgetLabel"] * {
-            background-color: transparent !important;
-            background: transparent !important;
-        }
-
-        /* ==================================================== */
         /* NUMBER + TEXT INPUTS                                 */
         /* ==================================================== */
         .stNumberInput input, .stTextInput input {
@@ -374,35 +352,33 @@ def apply_styles():
         }
 
         /* ==================================================== */
-        /* DROPDOWNS (SELECTBOX) — FORCE CRISP WHITE BACKGROUND */
+        /* DROPDOWNS (SELECTBOX) - TARGETED LIGHT OVERRIDE      */
         /* ==================================================== */
-        div[data-testid="stSelectbox"] [data-baseweb="select"],
-        div[data-testid="stSelectbox"] [data-baseweb="select"] *,
+        div[data-testid="stSelectbox"] div[data-baseweb="select"],
+        div[data-testid="stSelectbox"] div[data-baseweb="select"] *,
         div[data-baseweb="select"],
+        div[data-baseweb="select"] *,
         div[data-baseweb="select"] > div,
-        div[data-baseweb="select"] > div > div,
-        div[data-baseweb="select"] [class*="ValueContainer"],
-        div[data-baseweb="select"] [class*="Control"],
-        div[data-baseweb="select"] [class*="Value"] {
+        div[data-baseweb="select"] > div *,
+        div[data-baseweb="select"] [role="button"],
+        div[data-baseweb="select"] [role="button"] * {
             background-color: #ffffff !important;
             background: #ffffff !important;
             color: #0f172a !important;
             -webkit-text-fill-color: #0f172a !important;
         }
 
-        div[data-baseweb="select"] > div:first-child {
-            background-color: #ffffff !important;
-            background: #ffffff !important;
+        div[data-testid="stSelectbox"] [data-baseweb="select"] > div:first-child {
             border: 1px solid #e2e8f0 !important;
             border-radius: 6px !important;
             min-height: 42px !important;
             box-shadow: var(--shadow-sm) !important;
         }
 
-        div[data-baseweb="select"] svg {
+        div[data-baseweb="select"] svg,
+        div[data-baseweb="select"] svg * {
             fill: #1e40af !important;
             color: #1e40af !important;
-            opacity: 1 !important;
         }
 
         div[data-baseweb="popover"],
@@ -411,7 +387,7 @@ def apply_styles():
         ul[role="listbox"] {
             background-color: #ffffff !important;
             background: #ffffff !important;
-            border-color: #e2e8f0 !important;
+            color: #0f172a !important;
         }
 
         li[role="option"], div[role="option"] {
