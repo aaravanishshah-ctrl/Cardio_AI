@@ -1,6 +1,6 @@
 # =============================================================================
 # Shared styling module for CardioAI multi-page app.
-# Clinical / Medical aesthetic (Epic / UpToDate / Mayo Clinic inspired)
+# Clinical / Medical aesthetic + Mobile Responsive
 # =============================================================================
 
 import streamlit as st
@@ -57,8 +57,10 @@ def apply_styles():
         }
 
         .main .block-container {
-            padding-top: 1.5rem;
+            padding-top: 1.25rem;
             padding-bottom: 3rem;
+            padding-left: 1.25rem;
+            padding-right: 1.25rem;
             max-width: 1100px;
         }
 
@@ -97,25 +99,29 @@ def apply_styles():
         }
 
         /* ==================================================== */
-        /* NAVBAR                                               */
+        /* NAVBAR — DESKTOP                                     */
         /* ==================================================== */
         .navbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0.85rem 0 1.25rem 0;
+            padding: 0.75rem 0 1.1rem 0;
             border-bottom: 1px solid #e2e8f0;
-            margin-bottom: 2.5rem;
+            margin-bottom: 2rem;
             background: transparent;
+            flex-wrap: wrap;
+            gap: 0.75rem;
         }
         .navbar-logo {
             display: flex;
             align-items: center;
-            gap: 0.65rem;
-            font-size: 1.25rem;
+            gap: 0.6rem;
+            font-size: 1.2rem;
             font-weight: 700;
             color: #0f172a !important;
             letter-spacing: -0.02em;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
         .logo-icon {
             width: 28px;
@@ -123,17 +129,20 @@ def apply_styles():
             background: #1e40af;
             border-radius: 6px;
             display: inline-block;
+            flex-shrink: 0;
         }
         .navbar-links {
             display: flex;
-            gap: 2rem;
+            gap: 1.75rem;
             font-size: 0.9rem;
             font-weight: 500;
+            align-items: center;
         }
         .navbar-links span.nav-item {
             color: #475569 !important;
             cursor: pointer;
             transition: color 0.15s ease;
+            white-space: nowrap;
         }
         .navbar-links span.nav-item:hover { color: #1e40af !important; }
         .navbar-links span.nav-item.active {
@@ -143,16 +152,62 @@ def apply_styles():
         .navbar-cta {
             background: #1e40af;
             color: #ffffff !important;
-            padding: 0.55rem 1.25rem;
+            padding: 0.5rem 1.15rem;
             border-radius: 6px;
             font-weight: 600;
-            font-size: 0.875rem;
+            font-size: 0.85rem;
             cursor: pointer;
             transition: background 0.15s ease;
             box-shadow: var(--shadow-sm);
+            white-space: nowrap;
+            flex-shrink: 0;
         }
         .navbar-cta:hover {
             background: #1e3a8a;
+        }
+
+        /* ==================================================== */
+        /* NAVBAR — MOBILE / TABLET                             */
+        /* ==================================================== */
+        @media (max-width: 900px) {
+            .navbar {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.85rem;
+                padding-bottom: 1rem;
+            }
+            .navbar-logo {
+                font-size: 1.15rem;
+            }
+            .navbar-links {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: flex-start;
+                gap: 0.65rem 1.1rem;
+                width: 100%;
+            }
+            .navbar-links span.nav-item {
+                font-size: 0.85rem;
+            }
+            .navbar-cta {
+                width: 100%;
+                text-align: center;
+                padding: 0.65rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .navbar-links {
+                gap: 0.5rem 0.9rem;
+            }
+            .navbar-links span.nav-item {
+                font-size: 0.8rem;
+            }
+            .main .block-container {
+                padding-left: 0.85rem;
+                padding-right: 0.85rem;
+            }
         }
 
         /* ==================================================== */
@@ -202,6 +257,22 @@ def apply_styles():
             font-weight: 400;
         }
 
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.15rem !important;
+                line-height: 1.15 !important;
+            }
+            .hero-subtitle {
+                font-size: 0.95rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 1.85rem !important;
+            }
+        }
+
         /* ==================================================== */
         /* SECTION LABELS                                       */
         /* ==================================================== */
@@ -226,6 +297,12 @@ def apply_styles():
             line-height: 1.65;
             max-width: 680px;
             margin-bottom: 2.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .section-title {
+                font-size: 1.5rem !important;
+            }
         }
 
         /* ==================================================== */
@@ -303,6 +380,28 @@ def apply_styles():
             line-height: 1.55;
         }
 
+        @media (max-width: 900px) {
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.25rem 1rem;
+            }
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-row {
+                grid-template-columns: 1fr 1fr;
+            }
+            .stat-number {
+                font-size: 1.75rem;
+            }
+            .stat-label {
+                font-size: 0.75rem;
+            }
+        }
+
         /* ==================================================== */
         /* MAIN BUTTONS                                         */
         /* ==================================================== */
@@ -317,6 +416,7 @@ def apply_styles():
             font-size: 0.95rem !important;
             transition: background 0.15s ease !important;
             box-shadow: var(--shadow-sm) !important;
+            width: auto !important;
         }
         .stButton > button:hover {
             background: #1e3a8a !important;
@@ -324,6 +424,12 @@ def apply_styles():
             box-shadow: var(--shadow) !important;
         }
         .stButton > button * { color: #ffffff !important; }
+
+        @media (max-width: 480px) {
+            .stButton > button {
+                width: 100% !important;
+            }
+        }
 
         /* ==================================================== */
         /* NUMBER + TEXT INPUTS                                 */
@@ -352,7 +458,7 @@ def apply_styles():
         }
 
         /* ==================================================== */
-        /* DROPDOWNS (SELECTBOX) - TARGETED LIGHT OVERRIDE      */
+        /* DROPDOWNS (SELECTBOX)                                */
         /* ==================================================== */
         div[data-testid="stSelectbox"] div[data-baseweb="select"],
         div[data-testid="stSelectbox"] div[data-baseweb="select"] *,
@@ -524,6 +630,15 @@ def apply_styles():
         }
         .citation-block * { color: #475569 !important; }
 
+        @media (max-width: 480px) {
+            .risk-score-huge {
+                font-size: 2.5rem;
+            }
+            .result-card {
+                padding: 1.15rem 1.25rem;
+            }
+        }
+
         hr {
             border: none;
             border-top: 1px solid #e2e8f0;
@@ -567,6 +682,15 @@ def apply_styles():
             color: #1e40af !important;
             border-color: #bfdbfe !important;
         }
+
+        @media (max-width: 480px) {
+            a[href*="goto=screening"] > div,
+            a[href*="goto=clinical"] > div {
+                width: 100% !important;
+                text-align: center !important;
+                box-sizing: border-box !important;
+            }
+        }
     </style>
     """,
       unsafe_allow_html=True,
@@ -574,7 +698,7 @@ def apply_styles():
 
 
 def render_navbar(active_page="home"):
-  """Clean clinical navbar. Navigation via query params + st.switch_page()."""
+  """Clean clinical navbar — mobile responsive."""
 
   if "nav" in st.query_params:
     target = st.query_params["nav"]
