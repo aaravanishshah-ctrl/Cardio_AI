@@ -20,6 +20,25 @@ st.set_page_config(
 apply_styles()
 render_navbar(active_page="screening")
 
+# Inject CSS to fix ghost text overlap on File Uploader button
+st.markdown(
+    """
+    <style>
+    div[data-testid="stFileUploader"] button::before,
+    div[data-testid="stFileUploader"] label::before {
+        content: "" !important;
+        display: none !important;
+    }
+    div[data-testid="stFileUploader"] button {
+        font-family: 'Inter', sans-serif !important;
+        font-size: 0.9rem !important;
+        font-weight: 600 !important;
+    }
+    </style>
+""",
+    unsafe_allow_html=True,
+)
+
 
 # -----------------------------------------------------------------------
 # LOAD MODELS
@@ -157,8 +176,7 @@ st.markdown(
     <div class="section-label">Screening Tool</div>
     <h1 class="hero-title" style="font-size: 3.5rem;">Begin <span class="hero-title-accent">assessment.</span></h1>
     <p class="hero-subtitle">
-        Enter exact quantitative clinical values below. All lab and lifestyle 
-        inputs accept exact numerical measurements.
+        Enter exact quantitative clinical values below or upload blood transcriptomic profiles.
     </p>
 </div>
 """,
@@ -176,7 +194,7 @@ use_gene_mode = "Gene" in input_mode
 st.markdown("<div style='margin: 2rem 0;'></div>", unsafe_allow_html=True)
 
 # =======================================================================
-# CLINICAL MODE (100% UNIFORM NUMBER INPUTS)
+# CLINICAL MODE
 # =======================================================================
 if not use_gene_mode:
   col1, col2, col3 = st.columns(3)
@@ -339,15 +357,15 @@ if st.button("Begin Assessment →", type="primary"):
         f"""
         <div class="result-card">
             <div style="color: #94a3b8; font-size: 0.9rem; letter-spacing: 0.1em; text-transform: uppercase;">
-                Overall Cardiovascular Disease Risk
+                Overall Cardiovascular Event Probability (Machine Learning)
             </div>
             <div class="risk-score-huge" style="color: {overall_color};">{overall_risk:.1f}%</div>
             <div style="font-family: 'Playfair Display', serif; font-size: 1.5rem; color: {overall_color}; font-style: italic;">
                 {overall_level}
             </div>
             <div style="color: #94a3b8; font-size: 0.85rem; margin-top: 1rem; line-height: 1.5;">
-                Trained on 70,000 patient records (Kaggle Cardiovascular Disease cohort). 
-                Represents probability of any cardiovascular event.
+                Trained on 70,000 patient records (Kaggle Cardiovascular Cohort). 
+                Represents the statistical probability of experiencing an adverse cardiovascular event.
             </div>
         </div>
         """,
@@ -356,10 +374,25 @@ if st.button("Begin Assessment →", type="primary"):
 
     st.progress(int(overall_risk))
 
+    # Explanatory Banner for Subtype Staging vs ML Probability
+    st.markdown(
+        """
+        <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(94, 234, 212, 0.2); padding: 1rem 1.2rem; border-radius: 8px; margin-top: 2.5rem; margin-bottom: 1.5rem;">
+            <div style="color: #5eead4; font-weight: 600; font-size: 0.95rem; margin-bottom: 0.3rem;">
+                💡 Clinical Staging vs. Probability Notice
+            </div>
+            <div style="color: #94a3b8; font-size: 0.85rem; line-height: 1.5;">
+                <b>Overall Risk</b> (above) is a statistical Machine Learning probability.<br>
+                <b>Specific Condition Profiles</b> (below) represent <b>AHA/ACC & Framingham Guideline Staging Scores (0–100)</b> to indicate severity and criteria progression, <i>not an immediate probability of an event</i>.
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
     # 2. Subtype Breakdown
     st.markdown(
-        "<h3 style='margin-top: 2.5rem;'>Specific Condition Risk"
-        " Profile</h3>",
+        "<h3>Specific Condition Clinical Staging</h3>",
         unsafe_allow_html=True,
     )
 
@@ -373,9 +406,12 @@ if st.button("Begin Assessment →", type="primary"):
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
                     <div style="font-family: 'Playfair Display', serif; font-size: 1.3rem; color: white;">Hypertension</div>
-                    <div style="color: #94a3b8; font-size: 0.85rem; margin-top: 0.3rem;">{htn_label}</div>
+                    <div style="color: #94a3b8; font-size: 0.85rem; margin-top: 0.3rem;">2017 AHA/ACC Guideline Staging: {htn_label}</div>
                 </div>
-                <div style="font-family: 'Playfair Display', serif; font-size: 2.5rem; color: {htn_color};">{htn_pct}%</div>
+                <div style="text-align: right;">
+                    <div style="font-family: 'Playfair Display', serif; font-size: 2.2rem; color: {htn_color}; font-weight: 600;">{htn_pct}/100</div>
+                    <div style="color: #94a3b8; font-size: 0.75rem; text-transform: uppercase;">Severity Score</div>
+                </div>
             </div>
         </div>
         """,
@@ -395,9 +431,12 @@ if st.button("Begin Assessment →", type="primary"):
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
                     <div style="font-family: 'Playfair Display', serif; font-size: 1.3rem; color: white;">Metabolic Syndrome</div>
-                    <div style="color: #94a3b8; font-size: 0.85rem; margin-top: 0.3rem;">{ms_label} ({ms_crit}/4 criteria)</div>
+                    <div style="color: #94a3b8; font-size: 0.85rem; margin-top: 0.3rem;">NCEP ATP III Criteria: {ms_label} ({ms_crit}/4 risk factors)</div>
                 </div>
-                <div style="font-family: 'Playfair Display', serif; font-size: 2.5rem; color: {ms_color};">{ms_pct}%</div>
+                <div style="text-align: right;">
+                    <div style="font-family: 'Playfair Display', serif; font-size: 2.2rem; color: {ms_color}; font-weight: 600;">{ms_pct}/100</div>
+                    <div style="color: #94a3b8; font-size: 0.75rem; text-transform: uppercase;">Criteria Index</div>
+                </div>
             </div>
         </div>
         """,
@@ -415,9 +454,12 @@ if st.button("Begin Assessment →", type="primary"):
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
                     <div style="font-family: 'Playfair Display', serif; font-size: 1.3rem; color: white;">Coronary Artery Disease (CAD)</div>
-                    <div style="color: #94a3b8; font-size: 0.85rem; margin-top: 0.3rem;">Framingham risk factor weighting</div>
+                    <div style="color: #94a3b8; font-size: 0.85rem; margin-top: 0.3rem;">Framingham Risk Factor Weighting Score</div>
                 </div>
-                <div style="font-family: 'Playfair Display', serif; font-size: 2.5rem; color: {cad_color};">{cad_pct}%</div>
+                <div style="text-align: right;">
+                    <div style="font-family: 'Playfair Display', serif; font-size: 2.2rem; color: {cad_color}; font-weight: 600;">{cad_pct}/100</div>
+                    <div style="color: #94a3b8; font-size: 0.75rem; text-transform: uppercase;">Risk Score</div>
+                </div>
             </div>
         </div>
         """,
@@ -437,9 +479,12 @@ if st.button("Begin Assessment →", type="primary"):
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
                     <div style="font-family: 'Playfair Display', serif; font-size: 1.3rem; color: white;">Cerebrovascular / Stroke Risk</div>
-                    <div style="color: #94a3b8; font-size: 0.85rem; margin-top: 0.3rem;">Hypertension & lifestyle weightings</div>
+                    <div style="color: #94a3b8; font-size: 0.85rem; margin-top: 0.3rem;">Hypertension & Lifestyle Weighting Score</div>
                 </div>
-                <div style="font-family: 'Playfair Display', serif; font-size: 2.5rem; color: {stroke_color};">{stroke_pct}%</div>
+                <div style="text-align: right;">
+                    <div style="font-family: 'Playfair Display', serif; font-size: 2.2rem; color: {stroke_color}; font-weight: 600;">{stroke_pct}/100</div>
+                    <div style="color: #94a3b8; font-size: 0.75rem; text-transform: uppercase;">Risk Score</div>
+                </div>
             </div>
         </div>
         """,
@@ -532,6 +577,7 @@ if st.button("Begin Assessment →", type="primary"):
       class_probs = list(zip(encoder.classes_, probs))
       class_probs.sort(key=lambda x: x[1], reverse=True)
 
+      # RENDER ALL 6 DIAGNOSTIC CONDITIONS FOR FULL CLINICAL TRANSPARENCY
       for raw_cls, p in class_probs:
         pct = p * 100
         display_cls = raw_cls.replace("_", " ")
@@ -558,7 +604,7 @@ if st.button("Begin Assessment →", type="primary"):
                 """,
             unsafe_allow_html=True,
         )
-        st.progress(min(100, max(0, int(pct))))
+        st.progress(min(100, max(0, int(round(pct)))))
 
   st.markdown("<hr>", unsafe_allow_html=True)
   st.info(
