@@ -1,5 +1,5 @@
 # =============================================================================
-# CardioAI — SCREENING TOOL PAGE
+# CardioAI — SCREENING TOOL PAGE (Clinical Light Theme)
 # All inputs use quantitative clinical values & exact number inputs.
 # =============================================================================
 
@@ -19,25 +19,6 @@ st.set_page_config(
 
 apply_styles()
 render_navbar(active_page="screening")
-
-# Inject CSS to fix ghost text overlap on File Uploader button
-st.markdown(
-    """
-    <style>
-    div[data-testid="stFileUploader"] button::before,
-    div[data-testid="stFileUploader"] label::before {
-        content: "" !important;
-        display: none !important;
-    }
-    div[data-testid="stFileUploader"] button {
-        font-family: 'Inter', sans-serif !important;
-        font-size: 0.9rem !important;
-        font-weight: 600 !important;
-    }
-    </style>
-""",
-    unsafe_allow_html=True,
-)
 
 
 # -----------------------------------------------------------------------
@@ -172,9 +153,9 @@ def stroke_risk_calc(age, sys, cigs, gluc):
 # -----------------------------------------------------------------------
 st.markdown(
     """
-<div style="padding: 2rem 0;">
+<div style="padding: 1.5rem 0 1rem 0;">
     <div class="section-label">Screening Tool</div>
-    <h1 class="hero-title" style="font-size: 3.5rem;">Begin <span class="hero-title-accent">assessment.</span></h1>
+    <h1 class="hero-title" style="font-size: 2.75rem;">Begin <span class="hero-title-accent" style="color: #1e40af;">assessment.</span></h1>
     <p class="hero-subtitle">
         Enter exact quantitative clinical values below or upload blood transcriptomic profiles.
     </p>
@@ -191,7 +172,7 @@ input_mode = st.radio(
 )
 use_gene_mode = "Gene" in input_mode
 
-st.markdown("<div style='margin: 2rem 0;'></div>", unsafe_allow_html=True)
+st.markdown("<div style='margin: 1.5rem 0;'></div>", unsafe_allow_html=True)
 
 # =======================================================================
 # CLINICAL MODE
@@ -208,7 +189,7 @@ if not use_gene_mode:
     weight = st.number_input("Weight (kg)", 30, 250, 75)
     bmi = weight / ((height / 100) ** 2)
     st.markdown(
-        "<div style='color:#5eead4; font-weight:600; margin-top:0.5rem;'>BMI:"
+        "<div style='color:#1e40af; font-weight:600; margin-top:0.5rem;'>BMI:"
         f" {bmi:.1f}</div>",
         unsafe_allow_html=True,
     )
@@ -249,7 +230,7 @@ else:
         f"Loaded {gene_data.shape[0]} sample(s), {gene_data.shape[1]} genes"
     )
 
-st.markdown("<div style='margin: 2rem 0;'></div>", unsafe_allow_html=True)
+st.markdown("<div style='margin: 1.5rem 0;'></div>", unsafe_allow_html=True)
 
 # =======================================================================
 # PREDICT BUTTON & RESULTS
@@ -346,26 +327,26 @@ if st.button("Begin Assessment →", type="primary"):
     overall_risk = prob[1] * 100
 
     if overall_risk < 30:
-      overall_level, overall_color = "Low Risk", "#5eead4"
+      overall_level, overall_color = "Low Risk", "#059669"
     elif overall_risk < 60:
-      overall_level, overall_color = "Moderate Risk", "#fbbf24"
+      overall_level, overall_color = "Moderate Risk", "#d97706"
     else:
-      overall_level, overall_color = "High Risk", "#f87171"
+      overall_level, overall_color = "High Risk", "#dc2626"
 
     # Overall Risk Display
     st.markdown(
         f"""
         <div class="result-card">
-            <div style="color: #94a3b8; font-size: 0.9rem; letter-spacing: 0.1em; text-transform: uppercase;">
+            <div style="color: #64748b; font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600;">
                 Overall Cardiovascular Event Probability (Machine Learning)
             </div>
             <div class="risk-score-huge" style="color: {overall_color};">{overall_risk:.1f}%</div>
-            <div style="font-family: 'Playfair Display', serif; font-size: 1.5rem; color: {overall_color}; font-style: italic;">
+            <div style="font-size: 1.25rem; color: {overall_color}; font-weight: 600;">
                 {overall_level}
             </div>
-            <div style="color: #94a3b8; font-size: 0.85rem; margin-top: 1rem; line-height: 1.5;">
+            <div style="color: #475569; font-size: 0.85rem; margin-top: 0.8rem; line-height: 1.5;">
                 Trained on 70,000 patient records (Kaggle Cardiovascular Cohort). 
-                Represents the statistical probability of experiencing an adverse cardiovascular event.
+                Represents statistical probability of experiencing an adverse cardiovascular event.
             </div>
         </div>
         """,
@@ -374,14 +355,14 @@ if st.button("Begin Assessment →", type="primary"):
 
     st.progress(int(overall_risk))
 
-    # Explanatory Banner for Subtype Staging vs ML Probability
+    # Explanatory Banner
     st.markdown(
         """
-        <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(94, 234, 212, 0.2); padding: 1rem 1.2rem; border-radius: 8px; margin-top: 2.5rem; margin-bottom: 1.5rem;">
-            <div style="color: #5eead4; font-weight: 600; font-size: 0.95rem; margin-bottom: 0.3rem;">
+        <div style="background: #f1f5f9; border: 1px solid #cbd5e1; padding: 0.9rem 1.1rem; border-radius: 6px; margin-top: 2rem; margin-bottom: 1.25rem;">
+            <div style="color: #1e40af; font-weight: 600; font-size: 0.9rem; margin-bottom: 0.2rem;">
                 💡 Clinical Staging vs. Probability Notice
             </div>
-            <div style="color: #94a3b8; font-size: 0.85rem; line-height: 1.5;">
+            <div style="color: #475569; font-size: 0.85rem; line-height: 1.5;">
                 <b>Overall Risk</b> (above) is a statistical Machine Learning probability.<br>
                 <b>Specific Condition Profiles</b> (below) represent <b>AHA/ACC & Framingham Guideline Staging Scores (0–100)</b> to indicate severity and criteria progression, <i>not an immediate probability of an event</i>.
             </div>
@@ -392,25 +373,26 @@ if st.button("Begin Assessment →", type="primary"):
 
     # 2. Subtype Breakdown
     st.markdown(
-        "<h3>Specific Condition Clinical Staging</h3>",
+        "<h3 style='margin-top: 1.5rem;'>Specific Condition Clinical"
+        " Staging</h3>",
         unsafe_allow_html=True,
     )
 
     htn_pct, htn_label = htn_staging(ap_hi, ap_lo)
     htn_color = (
-        "#5eead4" if htn_pct < 30 else ("#fbbf24" if htn_pct < 60 else "#f87171")
+        "#059669" if htn_pct < 30 else ("#d97706" if htn_pct < 60 else "#dc2626")
     )
     st.markdown(
         f"""
-        <div class="result-card" style="padding: 1.5rem;">
+        <div class="result-card" style="padding: 1.25rem 1.5rem;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
-                    <div style="font-family: 'Playfair Display', serif; font-size: 1.3rem; color: white;">Hypertension</div>
-                    <div style="color: #94a3b8; font-size: 0.85rem; margin-top: 0.3rem;">2017 AHA/ACC Guideline Staging: {htn_label}</div>
+                    <div style="font-size: 1.15rem; color: #0f172a; font-weight: 600;">Hypertension</div>
+                    <div style="color: #475569; font-size: 0.85rem; margin-top: 0.25rem;">2017 AHA/ACC Guideline Staging: {htn_label}</div>
                 </div>
                 <div style="text-align: right;">
-                    <div style="font-family: 'Playfair Display', serif; font-size: 2.2rem; color: {htn_color}; font-weight: 600;">{htn_pct}/100</div>
-                    <div style="color: #94a3b8; font-size: 0.75rem; text-transform: uppercase;">Severity Score</div>
+                    <div style="font-size: 2rem; color: {htn_color}; font-weight: 700;">{htn_pct}/100</div>
+                    <div style="color: #64748b; font-size: 0.75rem; text-transform: uppercase; font-weight: 500;">Severity Score</div>
                 </div>
             </div>
         </div>
@@ -423,19 +405,19 @@ if st.button("Begin Assessment →", type="primary"):
         bmi, ap_hi, ap_lo, gluc_mgdl, chol_mgdl
     )
     ms_color = (
-        "#5eead4" if ms_pct < 50 else ("#fbbf24" if ms_pct < 75 else "#f87171")
+        "#059669" if ms_pct < 50 else ("#d97706" if ms_pct < 75 else "#dc2626")
     )
     st.markdown(
         f"""
-        <div class="result-card" style="padding: 1.5rem;">
+        <div class="result-card" style="padding: 1.25rem 1.5rem;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
-                    <div style="font-family: 'Playfair Display', serif; font-size: 1.3rem; color: white;">Metabolic Syndrome</div>
-                    <div style="color: #94a3b8; font-size: 0.85rem; margin-top: 0.3rem;">NCEP ATP III Criteria: {ms_label} ({ms_crit}/4 risk factors)</div>
+                    <div style="font-size: 1.15rem; color: #0f172a; font-weight: 600;">Metabolic Syndrome</div>
+                    <div style="color: #475569; font-size: 0.85rem; margin-top: 0.25rem;">NCEP ATP III Criteria: {ms_label} ({ms_crit}/4 risk factors)</div>
                 </div>
                 <div style="text-align: right;">
-                    <div style="font-family: 'Playfair Display', serif; font-size: 2.2rem; color: {ms_color}; font-weight: 600;">{ms_pct}/100</div>
-                    <div style="color: #94a3b8; font-size: 0.75rem; text-transform: uppercase;">Criteria Index</div>
+                    <div style="font-size: 2rem; color: {ms_color}; font-weight: 700;">{ms_pct}/100</div>
+                    <div style="color: #64748b; font-size: 0.75rem; text-transform: uppercase; font-weight: 500;">Criteria Index</div>
                 </div>
             </div>
         </div>
@@ -446,19 +428,19 @@ if st.button("Begin Assessment →", type="primary"):
 
     cad_pct = cad_risk_calc(age, gender, chol_mgdl, ap_hi, cigs_per_day, bmi)
     cad_color = (
-        "#5eead4" if cad_pct < 30 else ("#fbbf24" if cad_pct < 60 else "#f87171")
+        "#059669" if cad_pct < 30 else ("#d97706" if cad_pct < 60 else "#dc2626")
     )
     st.markdown(
         f"""
-        <div class="result-card" style="padding: 1.5rem;">
+        <div class="result-card" style="padding: 1.25rem 1.5rem;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
-                    <div style="font-family: 'Playfair Display', serif; font-size: 1.3rem; color: white;">Coronary Artery Disease (CAD)</div>
-                    <div style="color: #94a3b8; font-size: 0.85rem; margin-top: 0.3rem;">Framingham Risk Factor Weighting Score</div>
+                    <div style="font-size: 1.15rem; color: #0f172a; font-weight: 600;">Coronary Artery Disease (CAD)</div>
+                    <div style="color: #475569; font-size: 0.85rem; margin-top: 0.25rem;">Framingham Risk Factor Weighting Score</div>
                 </div>
                 <div style="text-align: right;">
-                    <div style="font-family: 'Playfair Display', serif; font-size: 2.2rem; color: {cad_color}; font-weight: 600;">{cad_pct}/100</div>
-                    <div style="color: #94a3b8; font-size: 0.75rem; text-transform: uppercase;">Risk Score</div>
+                    <div style="font-size: 2rem; color: {cad_color}; font-weight: 700;">{cad_pct}/100</div>
+                    <div style="color: #64748b; font-size: 0.75rem; text-transform: uppercase; font-weight: 500;">Risk Score</div>
                 </div>
             </div>
         </div>
@@ -469,21 +451,21 @@ if st.button("Begin Assessment →", type="primary"):
 
     stroke_pct = stroke_risk_calc(age, ap_hi, cigs_per_day, gluc_mgdl)
     stroke_color = (
-        "#5eead4"
+        "#059669"
         if stroke_pct < 30
-        else ("#fbbf24" if stroke_pct < 60 else "#f87171")
+        else ("#d97706" if stroke_pct < 60 else "#dc2626")
     )
     st.markdown(
         f"""
-        <div class="result-card" style="padding: 1.5rem;">
+        <div class="result-card" style="padding: 1.25rem 1.5rem;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
-                    <div style="font-family: 'Playfair Display', serif; font-size: 1.3rem; color: white;">Cerebrovascular / Stroke Risk</div>
-                    <div style="color: #94a3b8; font-size: 0.85rem; margin-top: 0.3rem;">Hypertension & Lifestyle Weighting Score</div>
+                    <div style="font-size: 1.15rem; color: #0f172a; font-weight: 600;">Cerebrovascular / Stroke Risk</div>
+                    <div style="color: #475569; font-size: 0.85rem; margin-top: 0.25rem;">Hypertension & Lifestyle Weighting Score</div>
                 </div>
                 <div style="text-align: right;">
-                    <div style="font-family: 'Playfair Display', serif; font-size: 2.2rem; color: {stroke_color}; font-weight: 600;">{stroke_pct}/100</div>
-                    <div style="color: #94a3b8; font-size: 0.75rem; text-transform: uppercase;">Risk Score</div>
+                    <div style="font-size: 2rem; color: {stroke_color}; font-weight: 700;">{stroke_pct}/100</div>
+                    <div style="color: #64748b; font-size: 0.75rem; text-transform: uppercase; font-weight: 500;">Risk Score</div>
                 </div>
             </div>
         </div>
@@ -494,7 +476,7 @@ if st.button("Begin Assessment →", type="primary"):
 
     # 3. Contributing Factors List
     st.markdown(
-        "<h3 style='margin-top: 2.5rem;'>Contributing Factors Breakdown</h3>",
+        "<h3 style='margin-top: 2rem;'>Contributing Factors Breakdown</h3>",
         unsafe_allow_html=True,
     )
     factors = []
@@ -539,14 +521,14 @@ if st.button("Begin Assessment →", type="primary"):
     if factors:
       for f in factors:
         st.markdown(
-            "<div style='padding: 0.5rem 0; color: #94a3b8; border-bottom: 1px"
-            f" solid rgba(94, 234, 212, 0.15);'>→ {f}</div>",
+            "<div style='padding: 0.5rem 0; color: #475569; border-bottom: 1px"
+            f" solid #e2e8f0;'>→ {f}</div>",
             unsafe_allow_html=True,
         )
     else:
       st.markdown(
-          "<div style='color: #5eead4; padding: 1rem 0;'>No major clinical"
-          " risk factors identified.</div>",
+          "<div style='color: #059669; padding: 0.8rem 0; font-weight: 500;'>No"
+          " major clinical risk factors identified.</div>",
           unsafe_allow_html=True,
       )
 
@@ -561,7 +543,7 @@ if st.button("Begin Assessment →", type="primary"):
           unsafe_allow_html=True,
       )
 
-      # Construct 7,058 feature input vector
+      # Construct feature input vector
       gene_vector = pd.Series(0.0, index=GENE_COLUMNS)
       for gene in GENE_COLUMNS:
         if gene in gene_data.columns:
@@ -570,35 +552,32 @@ if st.button("Begin Assessment →", type="primary"):
       clin_vector = pd.Series(0.0, index=CLIN_COLUMNS)
       X_input = pd.DataFrame([pd.concat([gene_vector, clin_vector])])
 
-      # Predict 6-class probability distribution
+      # Predict probabilities
       probs = gene_pipeline.predict_proba(X_input)[0]
 
-      # Pair classes with probabilities and sort from highest to lowest risk
       class_probs = list(zip(encoder.classes_, probs))
       class_probs.sort(key=lambda x: x[1], reverse=True)
 
-      # RENDER ALL 6 DIAGNOSTIC CONDITIONS FOR FULL CLINICAL TRANSPARENCY
       for raw_cls, p in class_probs:
         pct = p * 100
         display_cls = raw_cls.replace("_", " ")
 
-        # Color coding: Green for Healthy, Yellow for CAD, Red for Acute Events
         if raw_cls == "Healthy":
-          color = "#5eead4"
+          color = "#059669"
         elif raw_cls == "CAD":
-          color = "#fbbf24"
+          color = "#d97706"
         else:
-          color = "#f87171"
+          color = "#dc2626"
 
         st.markdown(
             f"""
-                <div class="result-card" style="padding: 1.2rem; margin-bottom: 0.8rem;">
+                <div class="result-card" style="padding: 1.1rem 1.4rem; margin-bottom: 0.75rem;">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <div>
-                            <div style="font-family: 'Playfair Display', serif; font-size: 1.3rem; color: white;">{display_cls}</div>
-                            <div style="color: #94a3b8; font-size: 0.8rem;">Multiclass Genomic Probability</div>
+                            <div style="font-size: 1.15rem; color: #0f172a; font-weight: 600;">{display_cls}</div>
+                            <div style="color: #64748b; font-size: 0.8rem;">Multiclass Genomic Probability</div>
                         </div>
-                        <div style="font-family: 'Playfair Display', serif; font-size: 2.2rem; color: {color}; font-weight: 600;">{pct:.1f}%</div>
+                        <div style="font-size: 2rem; color: {color}; font-weight: 700;">{pct:.1f}%</div>
                     </div>
                 </div>
                 """,
