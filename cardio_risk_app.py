@@ -3,7 +3,7 @@
 # =============================================================================
 
 import streamlit as st
-from styles import apply_styles, render_navbar, render_footer
+from styles import apply_styles, render_footer, render_navbar
 
 # 1. Page Configuration
 st.set_page_config(
@@ -19,15 +19,16 @@ render_navbar(active_page="home")
 
 # 3. Handle fast-navigation routing for the Hero buttons
 if "goto" in st.query_params:
-    target = st.query_params["goto"]
-    st.query_params.clear()
-    if target == "screening":
-        st.switch_page("pages/1_Screening_Tool.py")
-    elif target == "clinical":
-        st.switch_page("pages/2_Clinical_Reference.py")
+  target = st.query_params["goto"]
+  st.query_params.clear()
+  if target == "screening":
+    st.switch_page("pages/1_Screening_Tool.py")
+  elif target == "clinical":
+    st.switch_page("pages/2_Clinical_Reference.py")
 
 # 4. HERO SECTION
-st.markdown("""
+st.markdown(
+    """
 <div style="padding: 3rem 0 2rem 0;">
     <div class="hero-pill">Clinical Decision Support</div>
     <h1 class="hero-title">
@@ -56,10 +57,13 @@ st.markdown("""
         </a>
     </div>
 </div>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
 
-# 5. STATS ROW
-st.markdown("""
+# 5. STATS ROW (UPDATED ACCURACY & MULTI-CLASS METRICS)
+st.markdown(
+    """
 <div class="stats-row">
     <div class="stat-item">
         <div class="stat-number">17.9M</div>
@@ -70,18 +74,21 @@ st.markdown("""
         <div class="stat-label">Patients in clinical training cohort</div>
     </div>
     <div class="stat-item">
-        <div class="stat-number">0.80</div>
-        <div class="stat-label">ROC AUC on held-out test data</div>
+        <div class="stat-number">85.1%</div>
+        <div class="stat-label">Multiclass accuracy on genomic test cohort</div>
     </div>
     <div class="stat-item">
-        <div class="stat-number">2</div>
-        <div class="stat-label">Prediction modes: clinical & genomic</div>
+        <div class="stat-number">6</div>
+        <div class="stat-label">Genomic diagnostic conditions evaluated</div>
     </div>
 </div>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
 
 # 6. WHAT THIS TOOL DOES / FEATURE GRID
-st.markdown("""
+st.markdown(
+    """
 <div style="padding: 2rem 0;">
     <div class="section-label">What This Tool Does</div>
     <h2 class="section-title">A faster path to clinical<br>clarity on heart risk</h2>
@@ -118,7 +125,9 @@ st.markdown("""
         </div>
     </div>
 </div>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
 
 # 7. FOOTER
 render_footer()
