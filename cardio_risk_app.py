@@ -1,5 +1,5 @@
 # =============================================================================
-# CardioAI — HOME PAGE (Landing Page)
+# CardioAI — HOME PAGE (Landing Page - Clinical Theme)
 # =============================================================================
 
 import streamlit as st
@@ -29,7 +29,7 @@ if "goto" in st.query_params:
 # 4. HERO SECTION
 st.markdown(
     """
-<div style="padding: 3rem 0 2rem 0;">
+<div style="padding: 2.5rem 0 1.5rem 0;">
     <div class="hero-pill">Clinical Decision Support</div>
     <h1 class="hero-title">
         Cardiovascular risk<br>
@@ -42,17 +42,17 @@ st.markdown(
     </p>
     <div style="display: flex; gap: 1rem; margin-top: 2rem;">
         <a href="?goto=screening" target="_self" style="text-decoration:none;">
-            <div style="background: #5eead4; color: #0a1628; padding: 0.9rem 2rem; border-radius: 10px; font-weight: 600; font-family: 'Inter', sans-serif; display: inline-block; cursor: pointer; transition: all 0.2s;"
-                 onmouseover="this.style.background='#6ee7d0'; this.style.transform='translateY(-2px)';"
-                 onmouseout="this.style.background='#5eead4'; this.style.transform='translateY(0)';">
-                🕐 Begin Assessment
+            <div style="background: #1e40af; color: #ffffff; padding: 0.85rem 1.8rem; border-radius: 6px; font-weight: 600; font-family: 'Inter', sans-serif; display: inline-block; cursor: pointer; transition: all 0.15s ease; box-shadow: 0 1px 2px rgba(0,0,0,0.05);"
+                 onmouseover="this.style.background='#1e3a8a';"
+                 onmouseout="this.style.background='#1e40af';">
+                Begin Assessment →
             </div>
         </a>
         <a href="?goto=clinical" target="_self" style="text-decoration:none;">
-            <div style="background: transparent; color: white; padding: 0.9rem 2rem; border-radius: 10px; font-weight: 600; border: 1px solid rgba(94, 234, 212, 0.3); font-family: 'Inter', sans-serif; display: inline-block; cursor: pointer; transition: all 0.2s;"
-                 onmouseover="this.style.background='rgba(94, 234, 212, 0.1)'; this.style.color='#5eead4';"
-                 onmouseout="this.style.background='transparent'; this.style.color='white';">
-                Explore features →
+            <div style="background: #ffffff; color: #0f172a; padding: 0.85rem 1.8rem; border-radius: 6px; font-weight: 600; border: 1px solid #e2e8f0; font-family: 'Inter', sans-serif; display: inline-block; cursor: pointer; transition: all 0.15s ease; box-shadow: 0 1px 2px rgba(0,0,0,0.05);"
+                 onmouseover="this.style.background='#f1f5f9'; this.style.borderColor='#bfdbfe';"
+                 onmouseout="this.style.background='#ffffff'; this.style.borderColor='#e2e8f0';">
+                Explore features
             </div>
         </a>
     </div>
@@ -61,7 +61,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# 5. STATS ROW (UPDATED ACCURACY & MULTI-CLASS METRICS)
+# 5. STATS ROW
 st.markdown(
     """
 <div class="stats-row">
@@ -89,8 +89,8 @@ st.markdown(
 # 6. WHAT THIS TOOL DOES / FEATURE GRID
 st.markdown(
     """
-<div style="padding: 2rem 0;">
-    <div class="section-label">What This Tool Does</div>
+<div style="padding: 1.5rem 0 0.5rem 0;">
+    <div class="section-label">System Capabilities</div>
     <h2 class="section-title">A faster path to clinical<br>clarity on heart risk</h2>
     <p class="section-subtitle">
         Cardiovascular disease is often silent until symptoms appear late. 
@@ -102,7 +102,7 @@ st.markdown(
 <div class="feature-grid">
     <div class="feature-card">
         <div class="feature-icon">📊</div>
-        <div class="feature-title">Risk stratification</div>
+        <div class="feature-title">Risk Stratification</div>
         <div class="feature-desc">
             Composite 0–100 risk score weighted across demographics, vitals, 
             labs, and lifestyle — with rule-based per-condition breakdowns.
@@ -110,7 +110,7 @@ st.markdown(
     </div>
     <div class="feature-card">
         <div class="feature-icon">🧬</div>
-        <div class="feature-title">Genomic profiling</div>
+        <div class="feature-title">Genomic Profiling</div>
         <div class="feature-desc">
             Classifies blood samples across 6 classes: CAD, Heart Failure, AFib, 
             Hypertension, Ischemic Stroke, or Healthy using NCBI GEO datasets.
@@ -118,7 +118,7 @@ st.markdown(
     </div>
     <div class="feature-card">
         <div class="feature-icon">📖</div>
-        <div class="feature-title">Evidence-grounded</div>
+        <div class="feature-title">Evidence-Grounded</div>
         <div class="feature-desc">
             Built on peer-reviewed cardiology research. A decision-support 
             adjunct — not a replacement for clinical judgment.
