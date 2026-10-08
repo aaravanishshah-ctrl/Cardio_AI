@@ -8,7 +8,7 @@ from styles import apply_styles, render_footer, render_navbar
 # 1. Page Configuration
 st.set_page_config(
     page_title="CardioAI — Clinical Decision Support",
-    page_icon="🫀",
+    page_icon="favicon.svg",
     layout="wide",
     initial_sidebar_state="collapsed",
 )
