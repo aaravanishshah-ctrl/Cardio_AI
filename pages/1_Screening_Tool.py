@@ -12,7 +12,7 @@ from styles import apply_styles, render_footer, render_navbar
 
 st.set_page_config(
     page_title="Screening Tool — CardioAI",
-    page_icon="🔍",
+    page_icon="favicon.svg",
     layout="wide",
     initial_sidebar_state="collapsed",
 )
