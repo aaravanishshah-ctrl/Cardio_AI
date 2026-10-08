@@ -5,9 +5,12 @@
 import streamlit as st
 from styles import apply_styles, render_navbar, render_footer
 
-st.set_page_config(page_title="About — CardioAI", page_icon="ℹ️", layout="wide", initial_sidebar_state="collapsed")
-apply_styles()
-render_navbar(active_page="about")
+st.set_page_config(
+    page_title="About — CardioAI",
+    page_icon="favicon.svg",
+    layout="wide",
+    initial_sidebar_state="collapsed",
+)
 
 st.markdown("""
 <div style="padding: 2rem 0;">
