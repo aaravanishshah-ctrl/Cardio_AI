@@ -3,7 +3,7 @@
 # =============================================================================
 
 import streamlit as st
-from styles import apply_styles, render_navbar, render_footer
+from styles import apply_styles, render_footer, render_navbar
 
 st.set_page_config(
     page_title="For Clinicians — CardioAI",
@@ -11,6 +11,9 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="collapsed",
 )
+
+apply_styles()
+render_navbar(active_page="clinicians")
 
 st.markdown("""
 <div style="padding: 2rem 0;">
