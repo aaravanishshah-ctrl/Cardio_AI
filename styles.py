@@ -1,6 +1,6 @@
 # =============================================================================
 # Shared styling module for CardioAI multi-page app.
-# Clinical / Medical aesthetic + Custom SVG Logo + Mobile Responsive
+# Clinical / Medical aesthetic + Custom SVG Logo + Favicon Injection
 # =============================================================================
 
 import streamlit as st
@@ -9,6 +9,7 @@ import streamlit as st
 def apply_styles():
   st.markdown(
       """
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgdmlld0JveD0iMCAwIDMyIDMyIiBmaWxsPSJub25lIj48cmVjdCB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHJ4PSI4IiBmaWxsPSIxRTQwQUYiLz48cGF0aCBkPSJNMTYgMjUuNUMxNiAyNS41IDcgMTkgNyAxMi41QzcgOS40NjI0MyA5LjQ2MjQzIDcgMTI.NSA3QzE0LjM2NDQgNyAxNiA3LjkyNTQzIDE2IDkuNUMxNiA3LjkyNTQzIDE3LjYzNTYgNyAxOS41IDdDMjIuNTM3NiA3IDI1IDkuNDYyNDMgMjUgMTIuNUMyNSAxOSAxNiAyNS41IDE2IDI1LjVaIiBzdHJva2U9IiNGRkZGRkYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTEwLjUgMTVIMTNMMTQuNSAxMS41TDE3IDE4LjVMMTGuNSAxNUgyMS41IiBzdHJva2U9IiM5M0M1RkQiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PC9zdmc+">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
